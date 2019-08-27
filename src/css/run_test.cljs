@@ -1,7 +1,6 @@
 (ns css.run-test
   (:require [clojure.test :refer [deftest is]]
             [css :as js-css]
-            [garden.core :as garden]
             [clojure.string :as str]
             [clojure.walk :refer [postwalk]]))
 
@@ -30,19 +29,6 @@
          (map :selectors (parse "body h1, body h2 { font-size: 12px; }"))))
   (is (= [["body h1" "h2"]]
          (map :selectors (parse "body h1, h2 { font-size: 12px; }")))))
-
-(deftest garden-test
-  (is (= "body {\n  font-size: 18px;\n}"
-         (garden/css [:body {:font-size "18px"}])))
-  (is (= "body h1 {\n  font-size: 18px;\n}"
-         (garden/css [:body [:h1 {:font-size "18px"}]])))
-  (is
-    (= "body h1 {\n  font-size: 18px;\n}\n\nbody h2 {\n  font-size: 18px;\n}"
-       (garden/css [:body [:h1 {:font-size "18px"}] [:h2 {:font-size "18px"}]])
-       (garden/css [:body [:h1 {:font-size "18px"}] :body
-                    [:h2 {:font-size "18px"}]])))
-  (is (= "body, h1 {\n  font-size: 18px;\n}"
-         (garden/css [:body :h1 {:font-size "18px"}]))))
 
 (defn ->declarations
   [input]
