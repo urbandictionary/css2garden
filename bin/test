@@ -1,3 +1,4 @@
 #!/bin/sh
 
-yarn exec nodemon -- -e cljs -w css -x lumo test_runner.cljs
+lein classpath >classpath.txt
+yarn exec nodemon -- -e cljs -w css -x lumo -c $(cat classpath.txt) test_runner.cljs

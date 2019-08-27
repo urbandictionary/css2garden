@@ -1,6 +1,7 @@
 (ns css.test
   (:require [clojure.test :refer [deftest is]]
             [css :as js-css]
+            [garden.core :as garden]
             [clojure.walk :refer [postwalk]]))
 
 (defn remove-position
@@ -61,3 +62,5 @@
       (->garden
         (parse
           "body { font-size: 12px; font-weight: bold; } h1 { font-family: \"Geneva\"; }")))))
+
+(deftest garden-test (is (= " " " ")))
