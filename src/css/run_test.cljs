@@ -65,16 +65,29 @@
   (is (= [:x {:a 1}] (arrays [:x] {:a 1})))
   (is (= [:x [:y {:a 1}]] (arrays [:x :y] {:a 1}))))
 
+(defn ->clean-selectors
+  [selectors]
+  (map #(map keyword (str/split (name %) #" ")) selectors)
+  (map (fn [selector]
+         (let [output (map keyword (str/split (name selector) #" "))]
+           (if (= 1 (count output)) (first output) output)))
+    selectors))
+
+(deftest ->clean-selectors-test
+  (is (= [:a] (->clean-selectors ["a"])))
+  (is (= [:a :b] (->clean-selectors ["a" "b"])))
+  (is (= [[:a :b]] (->clean-selectors [(keyword "a b")]))))
+
 (defn ->garden
   [input]
   (reduce
     (fn [accum {:keys [selectors declarations]}]
-      (let [splits (map #(map keyword (str/split % #" ")) (map name selectors))]
-        (if (> (count (first splits)) 1)
-          (concat accum (arrays (first splits) (->declarations declarations)))
+      (let [clean-selectors (->clean-selectors selectors)]
+        (if (seq? (first clean-selectors))
           (concat accum
-                  (map keyword selectors)
-                  [(->declarations declarations)]))))
+                  (arrays (first clean-selectors)
+                          (->declarations declarations)))
+          (concat accum clean-selectors [(->declarations declarations)]))))
     []
     input))
 
