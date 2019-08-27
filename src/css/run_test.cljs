@@ -59,16 +59,27 @@
     {}
     input))
 
+(defn arrays
+  [[head & tail] attrs]
+  (if tail [head (arrays tail attrs)] [head attrs]))
+
+(deftest arrays-test
+  (is (= [:x {:a 1}] (arrays [:x] {:a 1})))
+  (is (= [:x [:y {:a 1}]] (arrays [:x :y] {:a 1}))))
+
 (defn ->garden
   [input]
   (reduce
     (fn [accum {:keys [selectors declarations]}]
-      (if (str/includes? (name (first selectors)) " ")
-        (let [[one two] (str/split (name (first selectors)) #" ")]
+      (let [splits (str/split (name (first selectors)) #" ")]
+        (if (> (count splits) 1)
+          (let [[one two] splits]
+            (concat accum
+                    [(keyword one)
+                     [(keyword two) (->declarations declarations)]]))
           (concat accum
-                  [(keyword one)
-                   [(keyword two) (->declarations declarations)]]))
-        (concat accum (map keyword selectors) [(->declarations declarations)])))
+                  (map keyword selectors)
+                  [(->declarations declarations)]))))
     []
     input))
 
