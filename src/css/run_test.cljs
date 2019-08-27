@@ -51,9 +51,9 @@
 (defn ->garden
   [input]
   (reduce (fn [accum item]
-            (conj accum
-                  (keyword (first (:selectors item)))
-                  (declarations (:declarations item))))
+            (concat accum
+                    (map keyword (:selectors item))
+                    [(declarations (:declarations item))]))
     []
     input))
 
@@ -62,6 +62,8 @@
          (->garden (parse "body { font-size: 12px; }"))))
   (is (= [:body {:font-size "12px", :font-weight "bold"}]
          (->garden (parse "body { font-size: 12px; font-weight: bold; }"))))
+  (is (= [:body :h1 {:font-size "12px", :font-weight "bold"}]
+         (->garden (parse "body, h1 { font-size: 12px; font-weight: bold; }"))))
   (is
     (=
       [:body {:font-size "12px", :font-weight "bold"} :h1
