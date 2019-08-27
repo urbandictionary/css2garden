@@ -23,21 +23,13 @@
            :declarations
              [{:type "declaration", :property "font-size", :value "12px"}]}]
          (parse "body { font-size: 12px; }")))
-  (is (= [{:type "rule",
-           :selectors ["body h1"],
-           :declarations
-             [{:type "declaration", :property "font-size", :value "12px"}]}]
-         (parse "body h1 { font-size: 12px; }")))
-  (is (= [{:type "rule",
-           :selectors ["body" "h1"],
-           :declarations
-             [{:type "declaration", :property "font-size", :value "12px"}]}]
-         (parse "body, h1 { font-size: 12px; }")))
-  (is (= [{:type "rule",
-           :selectors ["body h1" "body h2"],
-           :declarations
-             [{:type "declaration", :property "font-size", :value "12px"}]}]
-         (parse "body h1, body h2 { font-size: 12px; }"))))
+  (is (= [["body h1"]] (map :selectors (parse "body h1 { font-size: 12px; }"))))
+  (is (= [["body" "h1"]]
+         (map :selectors (parse "body, h1 { font-size: 12px; }"))))
+  (is (= [["body h1" "body h2"]]
+         (map :selectors (parse "body h1, body h2 { font-size: 12px; }"))))
+  (is (= [["body h1" "h2"]]
+         (map :selectors (parse "body h1, h2 { font-size: 12px; }")))))
 
 (deftest garden-test
   (is (= "body {\n  font-size: 18px;\n}"
@@ -80,14 +72,13 @@
 
 (defn ->garden
   [input]
-  (reduce
-    (fn [accum {:keys [selectors declarations]}]
-      (let [clean-selectors (->clean-selectors selectors)]
-        (if (seq? (first clean-selectors))
-          (concat accum
-                  (arrays (first clean-selectors)
-                          (->declarations declarations)))
-          (concat accum clean-selectors [(->declarations declarations)]))))
+  (reduce (fn [accum {:keys [selectors declarations]}]
+            (let [selectors (->clean-selectors selectors)]
+              (if (seq? (first selectors))
+                (concat accum
+                        (arrays (first selectors)
+                                (->declarations declarations)))
+                (concat accum selectors [(->declarations declarations)]))))
     []
     input))
 
