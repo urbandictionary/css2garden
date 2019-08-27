@@ -42,4 +42,11 @@
   (is (= [:body {:font-size "12px"}]
          (->garden (parse "body { font-size: 12px; }"))))
   (is (= [:body {:font-size "12px", :font-weight "bold"}]
-         (->garden (parse "body { font-size: 12px; font-weight: bold; }")))))
+         (->garden (parse "body { font-size: 12px; font-weight: bold; }"))))
+  (is
+    (=
+      [:body {:font-size "12px", :font-weight "bold"} :h1
+       {:font-family "\"Geneva\""}]
+      (->garden
+        (parse
+          "body { font-size: 12px; font-weight: bold; } h1 { font-family: \"Geneva\"; }")))))
