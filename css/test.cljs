@@ -22,16 +22,24 @@
              [{:type "declaration", :property "font-size", :value "12px"}]}]
          (parse "body { font-size: 12px; }"))))
 
+(defn declarations
+  [input]
+  (reduce (fn [accum item]
+            (assoc accum (keyword (:property item)) (:value item)))
+    {}
+    input))
+
 (defn ->garden
   [input]
   (reduce (fn [accum item]
             (conj accum
                   (keyword (first (:selectors item)))
-                  {(keyword (:property (first (:declarations item))))
-                     (:value (first (:declarations item)))}))
+                  (declarations (:declarations item))))
     []
     input))
 
 (deftest ->garden-test
   (is (= [:body {:font-size "12px"}]
-         (->garden (parse "body { font-size: 12px; }")))))
+         (->garden (parse "body { font-size: 12px; }"))))
+  (is (= [:body {:font-size "12px", :font-weight "bold"}]
+         (->garden (parse "body { font-size: 12px; font-weight: bold; }")))))
