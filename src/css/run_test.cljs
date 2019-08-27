@@ -2,6 +2,7 @@
   (:require [clojure.test :refer [deftest is]]
             [css :as js-css]
             [garden.core :as garden]
+            [clojure.string :as str]
             [clojure.walk :refer [postwalk]]))
 
 (defn remove-position
@@ -50,10 +51,14 @@
 
 (defn ->garden
   [input]
-  (reduce (fn [accum {:keys [selectors declarations]}]
-            (concat accum
-                    (map keyword selectors)
-                    [(->declarations declarations)]))
+  (reduce
+    (fn [accum {:keys [selectors declarations]}]
+      (if (str/includes? (name (first selectors)) " ")
+        (let [[one two] (str/split (name (first selectors)) #" ")]
+          (concat accum
+                  [(keyword one)
+                   [(keyword two) (->declarations declarations)]]))
+        (concat accum (map keyword selectors) [(->declarations declarations)])))
     []
     input))
 
@@ -64,9 +69,8 @@
          (->garden (parse "body { font-size: 12px; font-weight: bold; }"))))
   (is (= [:body :h1 {:font-size "12px"}]
          (->garden (parse "body, h1 { font-size: 12px; }"))))
-  #_(is (= [:body [:h1 {:font-size "12px", :font-weight "bold"}]]
-           (->garden (parse
-                       "body h1 { font-size: 12px; font-weight: bold; }"))))
+  (is (= [:body [:h1 {:font-size "12px", :font-weight "bold"}]]
+         (->garden (parse "body h1 { font-size: 12px; font-weight: bold; }"))))
   (is
     (= [:body {:font-size "12px"} :h1 {:font-family "\"Geneva\""}]
        (->garden
