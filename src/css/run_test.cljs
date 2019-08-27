@@ -41,7 +41,7 @@
   (is (= "body, h1 {\n  font-size: 18px;\n}"
          (garden/css [:body :h1 {:font-size "18px"}]))))
 
-(defn declarations
+(defn ->declarations
   [input]
   (reduce (fn [accum item]
             (assoc accum (keyword (:property item)) (:value item)))
@@ -50,10 +50,10 @@
 
 (defn ->garden
   [input]
-  (reduce (fn [accum item]
+  (reduce (fn [accum {:keys [selectors declarations]}]
             (concat accum
-                    (map keyword (:selectors item))
-                    [(declarations (:declarations item))]))
+                    (map keyword selectors)
+                    [(->declarations declarations)]))
     []
     input))
 
@@ -62,12 +62,12 @@
          (->garden (parse "body { font-size: 12px; }"))))
   (is (= [:body {:font-size "12px", :font-weight "bold"}]
          (->garden (parse "body { font-size: 12px; font-weight: bold; }"))))
-  (is (= [:body :h1 {:font-size "12px", :font-weight "bold"}]
-         (->garden (parse "body, h1 { font-size: 12px; font-weight: bold; }"))))
+  (is (= [:body :h1 {:font-size "12px"}]
+         (->garden (parse "body, h1 { font-size: 12px; }"))))
+  #_(is (= [:body [:h1 {:font-size "12px", :font-weight "bold"}]]
+           (->garden (parse
+                       "body h1 { font-size: 12px; font-weight: bold; }"))))
   (is
-    (=
-      [:body {:font-size "12px", :font-weight "bold"} :h1
-       {:font-family "\"Geneva\""}]
-      (->garden
-        (parse
-          "body { font-size: 12px; font-weight: bold; } h1 { font-family: \"Geneva\"; }")))))
+    (= [:body {:font-size "12px"} :h1 {:font-family "\"Geneva\""}]
+       (->garden
+         (parse "body { font-size: 12px } h1 { font-family: \"Geneva\"; }")))))
