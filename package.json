@@ -1,0 +1,11 @@
+{
+  "name": "css-to-garden",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "css": "^2.2.4",
+    "lumo": "^0.20.16"
+  }
+}
