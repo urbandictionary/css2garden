@@ -20,7 +20,18 @@
            :selectors ["body"],
            :declarations
              [{:type "declaration", :property "font-size", :value "12px"}]}]
-         (parse "body { font-size: 12px; }"))))
+         (parse "body { font-size: 12px; }")))
+  (is (= [{:type "rule",
+           :selectors ["body h1"],
+           :declarations
+             [{:type "declaration", :property "font-size", :value "12px"}]}]
+         (parse "body h1 { font-size: 12px; }")))
+  (is (= [{:type "rule",
+           :selectors ["body" "h1"],
+           :declarations
+             [{:type "declaration", :property "font-size", :value "12px"}]}]
+         (parse "body, h1 { font-size: 12px; }"))))
+
 
 (defn declarations
   [input]
