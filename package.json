@@ -6,6 +6,7 @@
   "license": "MIT",
   "dependencies": {
     "css": "^2.2.4",
-    "lumo": "^0.20.16"
+    "lumo": "^0.20.16",
+    "nodemon": "^1.19.1"
   }
 }
