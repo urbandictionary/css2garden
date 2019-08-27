@@ -1,4 +1,4 @@
-(ns css.test
+(ns css.run-test
   (:require [clojure.test :refer [deftest is]]
             [css :as js-css]
             [garden.core :as garden]
@@ -63,4 +63,6 @@
         (parse
           "body { font-size: 12px; font-weight: bold; } h1 { font-family: \"Geneva\"; }")))))
 
-(deftest garden-test (is (= " " " ")))
+(deftest garden-test
+  (is (= "body {\n  font-size: 18px;\n}"
+         (garden/css [:body {:font-size "18px"}]))))
