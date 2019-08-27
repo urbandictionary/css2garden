@@ -32,13 +32,23 @@
            :selectors ["body" "h1"],
            :declarations
              [{:type "declaration", :property "font-size", :value "12px"}]}]
-         (parse "body, h1 { font-size: 12px; }"))))
+         (parse "body, h1 { font-size: 12px; }")))
+  (is (= [{:type "rule",
+           :selectors ["body h1" "body h2"],
+           :declarations
+             [{:type "declaration", :property "font-size", :value "12px"}]}]
+         (parse "body h1, body h2 { font-size: 12px; }"))))
 
 (deftest garden-test
   (is (= "body {\n  font-size: 18px;\n}"
          (garden/css [:body {:font-size "18px"}])))
   (is (= "body h1 {\n  font-size: 18px;\n}"
          (garden/css [:body [:h1 {:font-size "18px"}]])))
+  (is
+    (= "body h1 {\n  font-size: 18px;\n}\n\nbody h2 {\n  font-size: 18px;\n}"
+       (garden/css [:body [:h1 {:font-size "18px"}] [:h2 {:font-size "18px"}]])
+       (garden/css [:body [:h1 {:font-size "18px"}] :body
+                    [:h2 {:font-size "18px"}]])))
   (is (= "body, h1 {\n  font-size: 18px;\n}"
          (garden/css [:body :h1 {:font-size "18px"}]))))
 
@@ -69,8 +79,10 @@
          (->garden (parse "body { font-size: 12px; font-weight: bold; }"))))
   (is (= [:body :h1 {:font-size "12px"}]
          (->garden (parse "body, h1 { font-size: 12px; }"))))
-  (is (= [:body [:h1 {:font-size "12px", :font-weight "bold"}]]
-         (->garden (parse "body h1 { font-size: 12px; font-weight: bold; }"))))
+  (is (= [:body [:h1 {:font-size "12px"}]]
+         (->garden (parse "body h1 { font-size: 12px; }"))))
+  #_(is (= [:body [:h1 {:font-size "12px"}] :body [:h2 {:font-size "12px"}]]
+           (->garden (parse "body h1, body h2 { font-size: 12px; }"))))
   (is
     (= [:body {:font-size "12px"} :h1 {:font-family "\"Geneva\""}]
        (->garden
