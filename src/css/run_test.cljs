@@ -59,9 +59,7 @@
     {}
     input))
 
-(defn arrays
-  [[head & tail] attrs]
-  (if tail [head (arrays tail attrs)] [head attrs]))
+(defn arrays [[head & tail] attrs] [head (if tail (arrays tail attrs) attrs)])
 
 (deftest arrays-test
   (is (= [:x {:a 1}] (arrays [:x] {:a 1})))
@@ -71,12 +69,9 @@
   [input]
   (reduce
     (fn [accum {:keys [selectors declarations]}]
-      (let [splits (str/split (name (first selectors)) #" ")]
-        (if (> (count splits) 1)
-          (let [[one two] splits]
-            (concat accum
-                    [(keyword one)
-                     [(keyword two) (->declarations declarations)]]))
+      (let [splits (map #(map keyword (str/split % #" ")) (map name selectors))]
+        (if (> (count (first splits)) 1)
+          (concat accum (arrays (first splits) (->declarations declarations)))
           (concat accum
                   (map keyword selectors)
                   [(->declarations declarations)]))))
