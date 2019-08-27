@@ -61,24 +61,25 @@
   [selectors]
   (map #(map keyword (str/split (name %) #" ")) selectors)
   (map (fn [selector]
-         (let [output (map keyword (str/split (name selector) #" "))]
-           (if (= 1 (count output)) (first output) output)))
+         (let [output (map keyword (str/split (name selector) #" "))] output))
     selectors))
 
 (deftest ->clean-selectors-test
-  (is (= [:a] (->clean-selectors ["a"])))
-  (is (= [:a :b] (->clean-selectors ["a" "b"])))
-  (is (= [[:a :b]] (->clean-selectors [(keyword "a b")]))))
+  (is (= [[:a]] (->clean-selectors ["a"])))
+  (is (= [[:a] [:b]] (->clean-selectors ["a" "b"])))
+  (is (= [[:a :b]] (->clean-selectors ["a b"]))))
 
 (defn ->garden
   [input]
   (reduce (fn [accum {:keys [selectors declarations]}]
             (let [selectors (->clean-selectors selectors)]
-              (if (seq? (first selectors))
+              (if (> (count (first selectors)) 1)
                 (concat accum
                         (arrays (first selectors)
                                 (->declarations declarations)))
-                (concat accum selectors [(->declarations declarations)]))))
+                (concat accum
+                        (map first selectors)
+                        [(->declarations declarations)]))))
     []
     input))
 
