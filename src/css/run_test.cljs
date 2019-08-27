@@ -33,6 +33,9 @@
              [{:type "declaration", :property "font-size", :value "12px"}]}]
          (parse "body, h1 { font-size: 12px; }"))))
 
+(deftest garden-test
+  (is (= "body {\n  font-size: 18px;\n}"
+         (garden/css [:body {:font-size "18px"}]))))
 
 (defn declarations
   [input]
@@ -62,7 +65,3 @@
       (->garden
         (parse
           "body { font-size: 12px; font-weight: bold; } h1 { font-family: \"Geneva\"; }")))))
-
-(deftest garden-test
-  (is (= "body {\n  font-size: 18px;\n}"
-         (garden/css [:body {:font-size "18px"}]))))
