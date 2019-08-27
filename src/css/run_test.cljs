@@ -35,7 +35,11 @@
 
 (deftest garden-test
   (is (= "body {\n  font-size: 18px;\n}"
-         (garden/css [:body {:font-size "18px"}]))))
+         (garden/css [:body {:font-size "18px"}])))
+  (is (= "body h1 {\n  font-size: 18px;\n}"
+         (garden/css [:body [:h1 {:font-size "18px"}]])))
+  (is (= "body, h1 {\n  font-size: 18px;\n}"
+         (garden/css [:body :h1 {:font-size "18px"}]))))
 
 (defn declarations
   [input]
