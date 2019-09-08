@@ -55,10 +55,12 @@
             (update :out
                     merge
                     (case type
-                      :media-type {(keyword value)
-                                     (if (= :keyword (:type previous-node))
-                                       (keyword (:value previous-node))
-                                       true)}
+                      :media-type
+                        {(keyword value) (if (= :keyword (:type previous-node))
+                                           (if (= "not" (:value previous-node))
+                                             false
+                                             (keyword (:value previous-node)))
+                                           true)}
                       :keyword {}
                       node))
             (assoc :previous-node node)))
@@ -77,6 +79,7 @@
            (parse "screen and (max-width: 900px) and (min-width: 600px)"))))
   (is (= [{:screen :only, :orientation "landscape"}]
          (ast->garden (parse "only screen and (orientation: landscape)"))))
+  (is (= [{:screen false}] (ast->garden (parse "not screen"))))
   (is
     (=
       [{:screen true, :max-width "900px", :min-width "600px"}
