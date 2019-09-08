@@ -5,10 +5,9 @@
 
 (defn node->clj
   [node]
-  (let [type (keyword (.-type node))]
-    (cond-> {:type type, :value (.-value node)}
-      (seq (.-nodes node)) (assoc :nodes
-                             (into [] (map node->clj (.-nodes node)))))))
+  (cond-> {:type (keyword (.-type node)), :value (.-value node)}
+    (seq (.-nodes node)) (assoc :nodes
+                           (into [] (map node->clj (.-nodes node))))))
 
 (defn parse
   [input]
