@@ -20,4 +20,5 @@
             :action "equals",
             :value "y",
             :ignoreCase false}] [{:type :tag, :name "g"}]]
-         (parse "a[b]:c d>e,f[x=y],g"))))
+         (parse "a[b]:c d>e,f[x=y],g")))
+  (is (= [[{:type :tag, :name "body"}]] (parse "body"))))
