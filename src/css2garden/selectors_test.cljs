@@ -1,6 +1,8 @@
 (ns css2garden.selectors-test
-  (:require [css-what :refer [parse]]
+  (:require css-what
             [clojure.test :refer [deftest is are]]))
+
+(defn parse [input] (js->clj (css-what/parse input) :keywordize-keys true))
 
 (deftest parse-test
   (is (= [[{:type "tag", :name "a"}
@@ -17,4 +19,4 @@
             :action "equals",
             :value "y",
             :ignoreCase false}] [{:type "tag", :name "g"}]]
-         (js->clj (parse "a[b]:c d>e,f[x=y],g") :keywordize-keys true))))
+         (parse "a[b]:c d>e,f[x=y],g"))))
