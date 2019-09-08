@@ -7,10 +7,10 @@
   [item]
   (if (map? item) (dissoc item :position :source) item))
 
-(defn parse
-  [input]
+(defn css->ast
+  [css]
   (get-in (postwalk remove-position
-                    (-> input
+                    (-> css
                         js-css/parse
                         (js->clj :keywordize-keys true)))
           [:stylesheet :rules]))
@@ -24,17 +24,17 @@
 
 (defn arrays [[head & tail] attrs] [head (if tail (arrays tail attrs) attrs)])
 
-(defn ->clean-selectors
+(defn parse-selectors
   [selectors]
   (map #(map keyword (str/split (name %) #" ")) selectors)
   (map (fn [selector]
          (let [output (map keyword (str/split (name selector) #" "))] output))
     selectors))
 
-(defn ->garden
+(defn ast->garden
   [input]
   (reduce (fn [accum {:keys [selectors declarations]}]
-            (let [selectors (->clean-selectors selectors)]
+            (let [selectors (parse-selectors selectors)]
               (if (> (count (first selectors)) 1)
                 (concat accum
                         (arrays (first selectors)

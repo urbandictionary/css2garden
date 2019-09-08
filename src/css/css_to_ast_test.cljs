@@ -1,18 +1,19 @@
-(ns css.parse-test
+(ns css.css-to-ast-test
   (:require [clojure.test :refer [deftest is testing]]
-            [css.run :refer [parse]]))
+            [css.run :refer [css->ast]]))
 
-(deftest parse-test
+(deftest css->ast-test
   (is (= [{:type "rule",
            :selectors ["body"],
            :declarations
              [{:type "declaration", :property "font-size", :value "12px"}]}]
-         (parse "body { font-size: 12px; }")))
-  (is (= [["body h1"]] (map :selectors (parse "body h1 { font-size: 12px; }"))))
+         (css->ast "body { font-size: 12px; }")))
+  (is (= [["body h1"]]
+         (map :selectors (css->ast "body h1 { font-size: 12px; }"))))
   (is (= [["body" "h1"]]
-         (map :selectors (parse "body, h1 { font-size: 12px; }"))))
+         (map :selectors (css->ast "body, h1 { font-size: 12px; }"))))
   (is (= [["body h1" "body h2"]]
-         (map :selectors (parse "body h1, body h2 { font-size: 12px; }"))))
+         (map :selectors (css->ast "body h1, body h2 { font-size: 12px; }"))))
   (is
     (=
       [{:type "media",
@@ -22,11 +23,11 @@
                  :declarations [{:type "declaration",
                                  :property "background-color",
                                  :value "blue"}]}]}]
-      (parse
+      (css->ast
         "@media screen and (max-width: 992px) {
           body {
             background-color: blue;
           }
         }")))
   (is (= [["body h1" "h2"]]
-         (map :selectors (parse "body h1, h2 { font-size: 12px; }")))))
+         (map :selectors (css->ast "body h1, h2 { font-size: 12px; }")))))

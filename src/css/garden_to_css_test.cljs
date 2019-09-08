@@ -1,4 +1,4 @@
-(ns css.garden-test
+(ns css.garden-to-css-test
   (:require [clojure.test :refer [deftest is are]]
             [garden.core :as garden]
             [garden.stylesheet :refer [at-media]]))
