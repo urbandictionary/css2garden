@@ -48,15 +48,22 @@
 
 (defmethod visitor :media-query
   [{:keys [nodes]}]
-  (:out (reduce (fn [{:keys [previous-node], :as accum}
-                     {:keys [type value], :as node}]
-                  (-> accum
-                      (update :out merge node)
-                      (assoc :previous-node node)))
-          {:out {}}
-          (remove #(= "and" (:value %)) nodes))))
-
-(defmethod visitor :media-type [{:keys [value]}] {(keyword value) true})
+  (:out
+    (reduce
+      (fn [{:keys [previous-node], :as accum} {:keys [type value], :as node}]
+        (-> accum
+            (update :out
+                    merge
+                    (case type
+                      :media-type {(keyword value)
+                                     (if (= :keyword (:type previous-node))
+                                       (keyword (:value previous-node))
+                                       true)}
+                      :keyword {}
+                      node))
+            (assoc :previous-node node)))
+      {:out {}}
+      (remove #(= "and" (:value %)) nodes))))
 
 (defmethod visitor :default [node] node)
 
@@ -68,8 +75,8 @@
   (is (= [{:screen true, :max-width "900px", :min-width "600px"}]
          (ast->garden
            (parse "screen and (max-width: 900px) and (min-width: 600px)"))))
-  #_(is (= [{:screen :only, :orientation "landscape"}]
-           (ast->garden (parse "only screen and (orientation: landscape)"))))
+  (is (= [{:screen :only, :orientation "landscape"}]
+         (ast->garden (parse "only screen and (orientation: landscape)"))))
   (is
     (=
       [{:screen true, :max-width "900px", :min-width "600px"}
