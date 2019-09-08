@@ -23,6 +23,10 @@
 (deftest at-media-test
   (testing
     "garden's @media features"
+    (are [css media]
+         (= css (garden->css (at-media media [])))
+         "@media screen{}"
+         {:screen true})
     (is (= "@media screen{}" (garden->css (at-media {:screen true} []))))
     (is (= "@media not screen{}" (garden->css (at-media {:screen false} []))))
     (is (= "@media screen and not braille{}"
