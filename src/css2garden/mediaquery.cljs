@@ -4,9 +4,17 @@
 
 (defn node->clj
   [node]
-  (cond-> {:type (keyword (.-type node)), :value (.-value node)}
+  (cond-> {:type (keyword (.-type node))}
+    (.-value node) (assoc :value (.-value node))
+    (.-selectors node) (assoc :selectors
+                         (-> node
+                             .-selectors
+                             js->clj))
     (seq (.-nodes node)) (assoc :nodes
-                           (into [] (map node->clj (.-nodes node))))))
+                           (->> node
+                                .-nodes
+                                (map node->clj)
+                                (into [])))))
 
 (defn parse
   [input]
