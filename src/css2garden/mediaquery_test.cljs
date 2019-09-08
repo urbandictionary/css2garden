@@ -33,3 +33,17 @@
         :expressions [{:modifier "min", :feature "width", :value "1100px"}]}]
       (mediaquery->ast
         "screen and (max-width: 900px) and (min-width: 600px), (min-width: 1100px)"))))
+
+(defn rule->garden
+  [rule]
+  (apply merge
+    (concat [{(keyword (:type rule)) (not (:inverse rule))}]
+            (map #(hash-map (keyword (str (:modifier %) "-" (:feature %)))
+                            (:value %))
+              (:expressions rule)))))
+
+(deftest rule->garden-test
+  (is (= {:screen true, :max-width "900px", :min-width "600px"}
+         (rule->garden
+           (first (mediaquery->ast
+                    "screen and (max-width: 900px) and (min-width: 600px)"))))))
