@@ -54,26 +54,31 @@
   (let [{:keys [media-feature value]} (media-feature-map nodes)]
     {(keyword media-feature) (if (nil? value) true value)}))
 
+(defn media-type-value
+  [{:keys [type value]}]
+  (if (= :keyword type) (if (= "not" value) false (keyword value)) true))
+
+(defn media-query-reduce
+  [{:keys [previous-node], :as accum} {:keys [type value], :as node}]
+  (-> accum
+      (update :out
+              merge
+              (case type
+                :media-type {(keyword value) (media-type-value previous-node)}
+                :keyword {}
+                node))
+      (assoc :previous-node node)))
+
+(defn is-and-node?
+  [{:keys [type value]}]
+  (and (= :keyword type) (= "and" value)))
+
 (defmethod visitor :media-query
   [{:keys [nodes]}]
-  (:out
-    (reduce
-      (fn [{:keys [previous-node], :as accum} {:keys [type value], :as node}]
-        (-> accum
-            (update :out
-                    merge
-                    (case type
-                      :media-type
-                        {(keyword value) (if (= :keyword (:type previous-node))
-                                           (if (= "not" (:value previous-node))
-                                             false
-                                             (keyword (:value previous-node)))
-                                           true)}
-                      :keyword {}
-                      node))
-            (assoc :previous-node node)))
-      {:out {}}
-      (remove #(= "and" (:value %)) nodes))))
+  (->> nodes
+       (remove is-and-node?)
+       (reduce media-query-reduce {:out {}})
+       :out))
 
 (deftest visitor-test
   (is (= {:color true}
