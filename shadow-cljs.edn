@@ -6,7 +6,9 @@
  [[garden "1.3.9"]]
 
  :builds
- {:test
+ {:repl
+  {:target :node}
+  :test
   {:target    :node-test
    :output-to "out/node-tests.js"
    :ns-regexp "-test$"
