@@ -24,11 +24,6 @@
           }"))))
   (is (= {:type :root,
           :nodes [{:type :rule,
-                   :nodes [{:type :decl, :prop "font-size", :value "12px"}],
-                   :selector "h1"}]}
-         (ast->clj (parse "h1 {font-size: 12px}"))))
-  (is (= {:type :root,
-          :nodes [{:type :rule,
                    :nodes [{:type :decl, :prop "font-size", :value "12px"}
                            {:type :decl, :prop "font-weight", :value "bold"}],
                    :selector "body"}]}
@@ -39,14 +34,27 @@
                            {:type :decl, :prop "font-weight", :value "bold"}],
                    :selector "body, h1"}]}
          (ast->clj (parse "body, h1 { font-size: 12px; font-weight: bold; }"))))
-  (is
-    (= {:type :root,
-        :nodes [{:type :rule,
-                 :nodes [{:type :decl, :prop "font-size", :value "12px"}],
-                 :selector "body"}
-                {:type :rule,
-                 :nodes
-                   [{:type :decl, :prop "font-family", :value "\"Geneva\""}],
-                 :selector "h1"}]}
-       (ast->clj
-         (parse "body { font-size: 12px } h1 { font-family: \"Geneva\"; }")))))
+  (is (= {:type :root,
+          :nodes [{:type :rule,
+                   :nodes [{:type :decl, :prop "font-size", :value "12px"}],
+                   :selector "body"}
+                  {:type :rule,
+                   :nodes
+                     [{:type :decl, :prop "font-family", :value "\"Geneva\""}],
+                   :selector "h1"}]}
+         (ast->clj
+           (parse "body { font-size: 12px } h1 { font-family: \"Geneva\"; }"))))
+  (is (= {:type :root,
+          :nodes [{:type :rule,
+                   :nodes [{:type :decl, :prop "font-size", :value "12px"}],
+                   :selector "body"}]}
+         (ast->clj (parse "body {font-size: 12px}")))))
+
+(defn ast->garden [ast] ast)
+
+(deftest ast->garden-test
+  #_(is (= [:body {:font-size "12px"}]
+           (-> "body {font-size: 12px}"
+               parse
+               ast->clj
+               ast->garden))))
