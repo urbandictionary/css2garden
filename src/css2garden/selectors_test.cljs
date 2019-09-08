@@ -25,4 +25,10 @@
   (is (= [[{:type :tag, :name "body"}] [{:type :tag, :name "h1"}]]
          (parse "body, h1"))))
 
-(deftest garden-selector-test (is (= 1 2)))
+(defn garden-selector
+  [selector decls]
+  (let [parsed (parse selector)] [(keyword (:name (ffirst parsed))) decls]))
+
+(deftest garden-selector-test
+  (is (= [:body {:font-size "12px"}]
+         (garden-selector "body" {:font-size "12px"}))))
