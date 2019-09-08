@@ -1,4 +1,4 @@
-(ns css2garden.ast-to-garden
+(ns css2garden.core
   (:require [css :as js-css]
             [clojure.walk :refer [postwalk]]
             [clojure.string :as str]))

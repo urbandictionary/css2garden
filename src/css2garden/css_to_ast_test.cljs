@@ -1,6 +1,6 @@
 (ns css2garden.css-to-ast-test
   (:require [clojure.test :refer [deftest is testing]]
-            [css2garden.ast-to-garden :refer [css->ast]]))
+            [css2garden.core :refer [css->ast]]))
 
 (deftest css->ast-test
   (is (= [{:type "rule",
