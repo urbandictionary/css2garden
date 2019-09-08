@@ -1,17 +1,18 @@
 (ns css.garden-test
-  (:require [clojure.test :refer [deftest is]]
+  (:require [clojure.test :refer [deftest is are]]
             [garden.core :as garden]
             [garden.stylesheet :refer [at-media]]))
 
-(defn compile [input] (garden/css {:pretty-print? false} input))
+(defn garden->css [input] (garden/css {:pretty-print? false} input))
 
-(deftest garden-test
-  (is (= "body{font-size:18px}" (compile [:body {:font-size "18px"}])))
-  (is (= "body h1{font-size:18px}" (compile [:body [:h1 {:font-size "18px"}]])))
-  (is (= "body h1{font-size:18px}body h2{font-size:18px}"
-         (compile [:body [:h1 {:font-size "18px"}] [:h2 {:font-size "18px"}]])
-         (compile [:body [:h1 {:font-size "18px"}] :body
-                   [:h2 {:font-size "18px"}]])))
-  (is (= "body,h1{font-size:18px}" (compile [:body :h1 {:font-size "18px"}])))
-  (is (= "@media screen{h1{a:b}}"
-         (compile [(at-media {:screen true} [:h1 {:a :b}])]))))
+(deftest garden->css-test
+  (are [css garden]
+       (= css (garden->css garden))
+       "body{font-size:18px}" [:body {:font-size "18px"}]
+       "body h1{font-size:18px}" [:body [:h1 {:font-size "18px"}]]
+       "body h1{font-size:18px}body h2{font-size:18px}"
+         [:body [:h1 {:font-size "18px"}] [:h2 {:font-size "18px"}]]
+       "body h1{font-size:18px}body h2{font-size:18px}"
+         [:body [:h1 {:font-size "18px"}] :body [:h2 {:font-size "18px"}]]
+       "body,h1{font-size:18px}" [:body :h1 {:font-size "18px"}]
+       "@media screen{h1{a:b}}" [(at-media {:screen true} [:h1 {:a :b}])]))
