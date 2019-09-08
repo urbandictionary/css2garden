@@ -1,6 +1,6 @@
 (ns css2garden.css-to-ast-test
   (:require [clojure.test :refer [deftest is testing are]]
-            [css2garden.core :refer [css->ast]]))
+            [css2garden.js-css :refer [css->ast]]))
 
 (deftest css->ast-test
   (testing

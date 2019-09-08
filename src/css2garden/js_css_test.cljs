@@ -1,6 +1,6 @@
-(ns css2garden.core-test
+(ns css2garden.js-css-test
   (:require [clojure.test :refer [deftest is testing]]
-            [css2garden.core :refer
+            [css2garden.js-css :refer
              [css->ast ast->garden parse-selectors arrays]]))
 
 (deftest parse-selectors-test
