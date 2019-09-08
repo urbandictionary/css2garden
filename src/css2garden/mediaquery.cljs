@@ -2,7 +2,6 @@
   (:require [clojure.walk :refer [postwalk]]
             postcss-media-query-parser))
 
-
 (defn node->clj
   [node]
   (cond-> {:type (keyword (.-type node)), :value (.-value node)}
@@ -13,16 +12,9 @@
   [input]
   (node->clj ((.. postcss-media-query-parser -default) input)))
 
-(defmulti visitor :type)
-
 (defn media-feature-map
   [nodes]
   (reduce (fn [accum {:keys [type value]}] (assoc accum type value)) {} nodes))
-
-(defmethod visitor :media-feature-expression
-  [{:keys [nodes]}]
-  (let [{:keys [media-feature value]} (media-feature-map nodes)]
-    {(keyword media-feature) (if (nil? value) true value)}))
 
 (defn media-type-value
   [{:keys [type value]}]
@@ -41,6 +33,13 @@
   [{:keys [type value]}]
   (and (= :keyword type) (= "and" value)))
 
+(defmulti visitor :type)
+
+(defmethod visitor :media-feature-expression
+  [{:keys [nodes]}]
+  (let [{:keys [media-feature value]} (media-feature-map nodes)]
+    {(keyword media-feature) (if (nil? value) true value)}))
+
 (defmethod visitor :media-query
   [{:keys [nodes]}]
   (->> nodes
@@ -48,9 +47,9 @@
        (reduce media-query-reduce {:out {}})
        :out))
 
-(defmethod visitor :default [node] node)
-
 (defmethod visitor :media-query-list [{:keys [nodes]}] nodes)
+
+(defmethod visitor :default [node] node)
 
 (defn try-first [value] (if (= 1 (count value)) (first value) value))
 
