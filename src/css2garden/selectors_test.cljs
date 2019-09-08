@@ -21,4 +21,8 @@
             :value "y",
             :ignoreCase false}] [{:type :tag, :name "g"}]]
          (parse "a[b]:c d>e,f[x=y],g")))
-  (is (= [[{:type :tag, :name "body"}]] (parse "body"))))
+  (is (= [[{:type :tag, :name "body"}]] (parse "body")))
+  (is (= [[{:type :tag, :name "body"}] [{:type :tag, :name "h1"}]]
+         (parse "body, h1"))))
+
+(deftest garden-selector-test (is (= 1 2)))
