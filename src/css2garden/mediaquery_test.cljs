@@ -5,6 +5,8 @@
 (defn mediaquery->ast [input] (js->clj (parse input) :keywordize-keys true))
 
 (deftest mediaquery->ast-test
+  (is (= [{:inverse false, :type "screen", :expressions []}]
+         (mediaquery->ast "screen")))
   (is (= [{:inverse false,
            :type "screen",
            :expressions [{:modifier "min", :feature "width", :value "48em"}]}]
