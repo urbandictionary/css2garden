@@ -73,11 +73,4 @@
        {:all true, :min-width "1100px"}]
       (rules->garden
         (mediaquery->ast
-          "screen and (max-width: 900px) and (min-width: 600px), (min-width: 1100px)"))))
-  #_(is
-      (=
-        [{:screen true, :max-width "900px", :min-width "600px"}
-         {:all true, :min-width "1100px"}]
-        (rules->garden
-          (mediaquery->ast
-            "screen and (min-device-width:1080px) and (orientation:portrait) and (-webkit-min-device-pixel-ratio:3")))))
+          "screen and (max-width: 900px) and (min-width: 600px), (min-width: 1100px)")))))

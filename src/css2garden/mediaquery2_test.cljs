@@ -64,6 +64,13 @@
            (parse "screen and (max-width: 900px) and (min-width: 600px)"))))
   (is
     (=
+      [{:screen true, :max-width "900px", :min-width "600px"}
+       {:min-width "1100px"}]
+      (ast->garden
+        (parse
+          "screen and (max-width: 900px) and (min-width: 600px), (min-width: 1100px)"))))
+  (is
+    (=
       [{:screen true,
         :min-device-width "1080px",
         :orientation "portrait",
