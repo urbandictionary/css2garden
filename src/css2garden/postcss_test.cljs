@@ -33,6 +33,12 @@
                            {:type :decl, :prop "font-weight", :value "bold"}],
                    :selector "body"}]}
          (ast->clj (parse "body { font-size: 12px; font-weight: bold; }"))))
+  (is (= {:type :root,
+          :nodes [{:type :rule,
+                   :nodes [{:type :decl, :prop "font-size", :value "12px"}
+                           {:type :decl, :prop "font-weight", :value "bold"}],
+                   :selector "body, h1"}]}
+         (ast->clj (parse "body, h1 { font-size: 12px; font-weight: bold; }"))))
   (is
     (= {:type :root,
         :nodes [{:type :rule,
