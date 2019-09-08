@@ -58,3 +58,9 @@
                parse
                ast->clj
                ast->garden))))
+
+(defn decl-map [{:keys [prop value]}] {(keyword prop) value})
+
+(deftest decl-map-test
+  (is (= {:font-size "12px"}
+         (decl-map {:type :decl, :prop "font-size", :value "12px"}))))
