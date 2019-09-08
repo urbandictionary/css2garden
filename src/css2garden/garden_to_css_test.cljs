@@ -27,6 +27,8 @@
     (is (= "@media not screen{}" (garden->css (at-media {:screen false} []))))
     (is (= "@media screen and not braille{}"
            (garden->css (at-media {:screen true, :braille false} []))))
+    (is (= "@media screen,not braille{}"
+           (garden->css (at-media [{:screen true} {:braille false}] []))))
     (is (= "@media only screen{}" (garden->css (at-media {:screen :only} []))))
     (is (= "@media(min-width:768px) and (max-width:959px){}"
            (garden->css (at-media {:min-width (px 768), :max-width (px 959)}
