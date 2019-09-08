@@ -95,6 +95,8 @@
   (is (= {:screen true, :max-width "900px", :min-width "600px"}
          (ast->garden
            (parse "screen and (max-width: 900px) and (min-width: 600px)"))))
+  (is (= {:all false, :max-width "900px"}
+         (ast->garden (parse "not all (max-width: 900px)"))))
   (is (= {:screen :only, :orientation "landscape"}
          (ast->garden (parse "only screen and (orientation: landscape)"))))
   (is (= {:screen false} (ast->garden (parse "not screen"))))
