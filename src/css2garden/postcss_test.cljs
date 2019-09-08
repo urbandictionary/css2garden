@@ -1,6 +1,7 @@
 (ns css2garden.postcss-test
   (:require [clojure.test :refer [deftest is are]]
             [postcss :refer [parse]]
+            [clojure.walk :refer [postwalk]]
             [css2garden.ast :refer [ast->clj]]))
 
 (deftest parse-test
@@ -50,16 +51,28 @@
                    :selector "body"}]}
          (ast->clj (parse "body {font-size: 12px}")))))
 
-(defn ast->garden [ast] ast)
+(defn decl-map [{:keys [prop value]}] {(keyword prop) value})
+
+(defmulti visit :type)
+
+(defmethod visit :root [{:keys [nodes]}] (first nodes))
+
+(defmethod visit :decl [ast] (decl-map ast))
+
+(defmethod visit :rule
+  [{:keys [selector nodes]}]
+  [(keyword selector) (apply merge nodes)])
+
+(defmethod visit :default [ast] ast)
+
+(defn ast->garden [ast] (postwalk visit ast))
 
 (deftest ast->garden-test
-  #_(is (= [:body {:font-size "12px"}]
-           (-> "body {font-size: 12px}"
-               parse
-               ast->clj
-               ast->garden))))
-
-(defn decl-map [{:keys [prop value]}] {(keyword prop) value})
+  (is (= [:body {:font-size "12px"}]
+         (-> "body {font-size: 12px}"
+             parse
+             ast->clj
+             ast->garden))))
 
 (deftest decl-map-test
   (is (= {:font-size "12px"}
