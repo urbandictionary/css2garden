@@ -33,7 +33,15 @@
                           :nodes [{:type :media-feature, :value "min-width"}
                                   {:type :colon, :value ":"}
                                   {:type :value, :value "600px"}]}]}]}
-       (parse "screen and (max-width: 900px) and (min-width: 600px)"))))
+       (parse "screen and (max-width: 900px) and (min-width: 600px)")))
+  (is (= {:type :media-query-list,
+          :value "(color)",
+          :nodes [{:type :media-query,
+                   :value "(color)",
+                   :nodes [{:type :media-feature-expression,
+                            :value "(color)",
+                            :nodes [{:type :media-feature, :value "color"}]}]}]}
+         (parse "(color)"))))
 
 (defmulti visitor :type)
 
@@ -44,7 +52,7 @@
 (defmethod visitor :media-feature-expression
   [{:keys [nodes]}]
   (let [{:keys [media-feature value]} (media-feature-map nodes)]
-    {(keyword media-feature) value}))
+    {(keyword media-feature) (if (nil? value) true value)}))
 
 (defmethod visitor :media-query
   [{:keys [nodes]}]
@@ -67,6 +75,12 @@
       {:out {}}
       (remove #(= "and" (:value %)) nodes))))
 
+(deftest visitor-test
+  (is (= {:color true}
+         (visitor {:type :media-feature-expression,
+                   :value "(color)",
+                   :nodes [{:type :media-feature, :value "color"}]}))))
+
 (defmethod visitor :default [node] node)
 
 (defmethod visitor :media-query-list [{:keys [nodes]}] nodes)
@@ -80,6 +94,20 @@
   (is (= [{:screen :only, :orientation "landscape"}]
          (ast->garden (parse "only screen and (orientation: landscape)"))))
   (is (= [{:screen false}] (ast->garden (parse "not screen"))))
+  (is
+    (=
+      [{:screen :only, :min-width "100px"} {:all false, :min-width "100px"}
+       {:print false, :min-height "100px"} {:color true}
+       {:min-height "100px", :max-height "1000px"}
+       {:handheld true, :orientation "landscape"}]
+      (ast->garden
+        (parse
+          "only screen and (min-width: 100px),
+           not all and (min-width: 100px),
+           not print and (min-height: 100px),
+           (color),
+           (min-height: 100px) and (max-height: 1000px), 
+           handheld and (orientation: landscape)"))))
   (is
     (=
       [{:screen true, :max-width "900px", :min-width "600px"}
