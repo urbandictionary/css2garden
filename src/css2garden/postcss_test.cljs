@@ -1,23 +1,7 @@
 (ns css2garden.postcss-test
   (:require [clojure.test :refer [deftest is are]]
-            [clojure.walk :refer [postwalk]]
-            [postcss :refer [parse]]))
-
-(defn cleanup
-  [input]
-  (if (map? input)
-    (-> input
-        (dissoc :raws :source)
-        (update :type keyword))
-    input))
-
-(defn parse-result->clj
-  [input]
-  (->> (-> input
-           js/JSON.stringify
-           js/JSON.parse
-           (js->clj :keywordize-keys true))
-       (postwalk cleanup)))
+            [postcss :refer [parse]]
+            [css2garden.ast :refer [ast->clj]]))
 
 (deftest parse-test
   (is
@@ -30,7 +14,7 @@
                          :nodes
                            [{:type :decl, :prop "font-size", :value "12px"}],
                          :selector "h1"}]}]}
-      (parse-result->clj
+      (ast->clj
         (parse
           "
           @media not screen and (max-height: 300px) {
