@@ -6,6 +6,7 @@
   "license": "MIT",
   "dependencies": {
     "css": "^2.2.4",
+    "css-mediaquery": "^0.1.2",
     "shadow-cljs": "^2.8.52"
   }
 }
