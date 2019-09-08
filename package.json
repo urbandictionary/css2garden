@@ -7,8 +7,10 @@
   "dependencies": {
     "css": "^2.2.4",
     "css-mediaquery": "^0.1.2",
+    "css-what": "^3.2.0",
     "postcss": "^7.0.18",
     "postcss-media-query-parser": "^0.2.3",
+    "postcss-selector-parser": "^6.0.2",
     "shadow-cljs": "^2.8.52"
   }
 }
