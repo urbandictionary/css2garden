@@ -87,15 +87,17 @@
 
 (defmethod visitor :media-query-list [{:keys [nodes]}] nodes)
 
-(defn ast->garden [ast] (postwalk visitor ast))
+(defn try-first [value] (if (= 1 (count value)) (first value) value))
+
+(defn ast->garden [ast] (try-first (postwalk visitor ast)))
 
 (deftest ast->garden-test
-  (is (= [{:screen true, :max-width "900px", :min-width "600px"}]
+  (is (= {:screen true, :max-width "900px", :min-width "600px"}
          (ast->garden
            (parse "screen and (max-width: 900px) and (min-width: 600px)"))))
-  (is (= [{:screen :only, :orientation "landscape"}]
+  (is (= {:screen :only, :orientation "landscape"}
          (ast->garden (parse "only screen and (orientation: landscape)"))))
-  (is (= [{:screen false}] (ast->garden (parse "not screen"))))
+  (is (= {:screen false} (ast->garden (parse "not screen"))))
   (is
     (=
       [{:screen :only, :min-width "100px"} {:all false, :min-width "100px"}
@@ -126,10 +128,10 @@
           "screen and (max-width: 900px) and (min-width: 600px), (min-width: 1100px)"))))
   (is
     (=
-      [{:screen true,
-        :min-device-width "1080px",
-        :orientation "portrait",
-        :-webkit-min-device-pixel-ratio "3"}]
+      {:screen true,
+       :min-device-width "1080px",
+       :orientation "portrait",
+       :-webkit-min-device-pixel-ratio "3"}
       (ast->garden
         (parse
           "screen and (min-device-width:1080px) and (orientation:portrait) and (-webkit-min-device-pixel-ratio:3)")))))
