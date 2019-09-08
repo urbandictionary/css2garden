@@ -22,8 +22,9 @@
             :ignoreCase false}] [{:type :tag, :name "g"}]]
          (parse "a[b]:c d>e,f[x=y],g")))
   (is (= [[{:type :tag, :name "body"}]] (parse "body")))
-  (is (= [[{:type :tag, :name "body"}] [{:type :tag, :name "h1"}]]
-         (parse "body, h1"))))
+  (is (= [[{:type :tag, :name "body"} {:type :descendant}
+           {:type :tag, :name "h1"}]]
+         (parse "body h1"))))
 
 (defn garden-selector
   [selector decls]
@@ -31,4 +32,6 @@
 
 (deftest garden-selector-test
   (is (= [:body {:font-size "12px"}]
-         (garden-selector "body" {:font-size "12px"}))))
+         (garden-selector "body" {:font-size "12px"})))
+  #_(is (= [:body [:h1 {:font-size "12px"}]]
+           (garden-selector "body h1" {:font-size "12px"}))))
