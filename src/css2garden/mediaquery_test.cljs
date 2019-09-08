@@ -44,11 +44,23 @@
     (concat [{(keyword (:type rule)) (not (:inverse rule))}]
             (map expression->garden (:expressions rule)))))
 
-(deftest rule->garden-test
+(defn rules->garden
+  [rules]
+  (let [output (map rule->garden rules)]
+    (if (= 1 (count output)) (first output) output)))
+
+(deftest rules->garden-test
   (is (= {:screen true, :max-width "900px", :min-width "600px"}
-         (rule->garden
-           (first (mediaquery->ast
-                    "screen and (max-width: 900px) and (min-width: 600px)")))))
+         (rules->garden
+           (mediaquery->ast
+             "screen and (max-width: 900px) and (min-width: 600px)"))))
   (is (= {:screen true, :orientation "landscape"}
-         (rule->garden (first (mediaquery->ast
-                                "only screen and (orientation: landscape)"))))))
+         (rules->garden (mediaquery->ast
+                          "only screen and (orientation: landscape)"))))
+  (is
+    (=
+      [{:screen true, :max-width "900px", :min-width "600px"}
+       {:all true, :min-width "1100px"}]
+      (rules->garden
+        (mediaquery->ast
+          "screen and (max-width: 900px) and (min-width: 600px), (min-width: 1100px)")))))
