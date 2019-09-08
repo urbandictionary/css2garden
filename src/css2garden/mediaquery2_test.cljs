@@ -61,4 +61,13 @@
 (deftest ast->garden-test
   (is (= [{:screen true, :max-width "900px", :min-width "600px"}]
          (ast->garden
-           (parse "screen and (max-width: 900px) and (min-width: 600px)")))))
+           (parse "screen and (max-width: 900px) and (min-width: 600px)"))))
+  (is
+    (=
+      [{:screen true,
+        :min-device-width "1080px",
+        :orientation "portrait",
+        :-webkit-min-device-pixel-ratio "3"}]
+      (ast->garden
+        (parse
+          "screen and (min-device-width:1080px) and (orientation:portrait) and (-webkit-min-device-pixel-ratio:3)")))))
