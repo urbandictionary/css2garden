@@ -8,7 +8,7 @@
 
 (deftest garden->css-test
   (testing
-    "garden features"
+    "garden's css features"
     (are [css garden]
          (= css (garden->css garden))
          "body{font-size:18px}" [:body {:font-size "18px"}]
@@ -22,7 +22,7 @@
 
 (deftest at-media-test
   (testing
-    "garden features"
+    "garden's @media features"
     (is (= "@media screen{}" (garden->css (at-media {:screen true} []))))
     (is (= "@media not screen{}" (garden->css (at-media {:screen false} []))))
     (is (= "@media screen and not braille{}"
