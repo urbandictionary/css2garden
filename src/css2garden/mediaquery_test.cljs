@@ -33,15 +33,15 @@
         :expressions [{:modifier "min", :feature "width", :value "1100px"}]}]
       (mediaquery->ast
         "screen and (max-width: 900px) and (min-width: 600px), (min-width: 1100px)")))
-  (is
-    (=
-      [{:inverse false,
-        :type "screen",
-        :expressions
-          [{:modifier "min", :feature "device-width", :value "1080px"}
-           {:modifier nil, :feature "orientation", :value "portrait"}]}]
-      (mediaquery->ast
-        "screen and (min-device-width:1080px) and (orientation:portrait) and (-webkit-min-device-pixel-ratio:3"))))
+  #_(is
+      (=
+        [{:inverse false,
+          :type "screen",
+          :expressions
+            [{:modifier "min", :feature "device-width", :value "1080px"}
+             {:modifier nil, :feature "orientation", :value "portrait"}]}]
+        (mediaquery->ast
+          "screen and (min-device-width:1080px) and (orientation:portrait) and (-webkit-min-device-pixel-ratio:3"))))
 
 
 (defn expression->garden
