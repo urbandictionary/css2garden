@@ -27,12 +27,6 @@
           :nodes [{:type :rule,
                    :nodes [{:type :decl, :prop "font-size", :value "12px"}
                            {:type :decl, :prop "font-weight", :value "bold"}],
-                   :selector "body"}]}
-         (ast->clj (parse "body { font-size: 12px; font-weight: bold; }"))))
-  (is (= {:type :root,
-          :nodes [{:type :rule,
-                   :nodes [{:type :decl, :prop "font-size", :value "12px"}
-                           {:type :decl, :prop "font-weight", :value "bold"}],
                    :selector "body, h1"}]}
          (ast->clj (parse "body, h1 { font-size: 12px; font-weight: bold; }"))))
   (is (= {:type :root,
@@ -49,7 +43,12 @@
           :nodes [{:type :rule,
                    :nodes [{:type :decl, :prop "font-size", :value "12px"}],
                    :selector "body"}]}
-         (ast->clj (parse "body {font-size: 12px}")))))
+         (ast->clj (parse "body {font-size: 12px}")))))(is (= {:type :root,
+        :nodes [{:type :rule,
+                 :nodes [{:type :decl, :prop "font-size", :value "12px"}
+                         {:type :decl, :prop "font-weight", :value "bold"}],
+                 :selector "body"}]}
+       (ast->clj (parse "body { font-size: 12px; font-weight: bold; }"))))
 
 (defn decl-map [{:keys [prop value]}] {(keyword prop) value})
 
@@ -70,6 +69,11 @@
 (deftest ast->garden-test
   (is (= [:body {:font-size "12px"}]
          (-> "body {font-size: 12px}"
+             parse
+             ast->clj
+             ast->garden)))
+  (is (= [:body {:font-size "12px", :font-weight "bold"}]
+         (-> "body {font-size: 12px; font-weight: bold}"
              parse
              ast->clj
              ast->garden))))
