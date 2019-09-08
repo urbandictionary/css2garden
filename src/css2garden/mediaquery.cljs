@@ -18,7 +18,9 @@
 
 (defn media-type-value
   [{:keys [type value]}]
-  (if (= :keyword type) (if (= "not" value) false (keyword value)) true))
+  (case type
+    :keyword (if (= "not" value) false (keyword value))
+    true))
 
 (defn media-query-reduce
   [{:keys [previous-node out], :as accum} {:keys [type value], :as node}]
@@ -29,7 +31,7 @@
                  node)),
    :previous-node node})
 
-(defn is-and-node?
+(defn and-keyword-node?
   [{:keys [type value]}]
   (and (= :keyword type) (= "and" value)))
 
@@ -43,7 +45,7 @@
 (defmethod visitor :media-query
   [{:keys [nodes]}]
   (->> nodes
-       (remove is-and-node?)
+       (remove and-keyword-node?)
        (reduce media-query-reduce {:out {}})
        :out))
 
