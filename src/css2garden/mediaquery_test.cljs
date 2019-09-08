@@ -34,16 +34,21 @@
       (mediaquery->ast
         "screen and (max-width: 900px) and (min-width: 600px), (min-width: 1100px)"))))
 
+(defn expression->garden
+  [{:keys [modifier feature value]}]
+  (hash-map (keyword (if modifier (str modifier "-" feature) feature)) value))
+
 (defn rule->garden
   [rule]
   (apply merge
     (concat [{(keyword (:type rule)) (not (:inverse rule))}]
-            (map #(hash-map (keyword (str (:modifier %) "-" (:feature %)))
-                            (:value %))
-              (:expressions rule)))))
+            (map expression->garden (:expressions rule)))))
 
 (deftest rule->garden-test
   (is (= {:screen true, :max-width "900px", :min-width "600px"}
          (rule->garden
            (first (mediaquery->ast
-                    "screen and (max-width: 900px) and (min-width: 600px)"))))))
+                    "screen and (max-width: 900px) and (min-width: 600px)")))))
+  (is (= {:screen true, :orientation "landscape"}
+         (rule->garden (first (mediaquery->ast
+                                "only screen and (orientation: landscape)"))))))
