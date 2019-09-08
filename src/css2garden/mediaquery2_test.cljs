@@ -58,15 +58,13 @@
   (if (= :keyword type) (if (= "not" value) false (keyword value)) true))
 
 (defn media-query-reduce
-  [{:keys [previous-node], :as accum} {:keys [type value], :as node}]
-  (-> accum
-      (update :out
-              merge
-              (case type
-                :media-type {(keyword value) (media-type-value previous-node)}
-                :keyword {}
-                node))
-      (assoc :previous-node node)))
+  [{:keys [previous-node out], :as accum} {:keys [type value], :as node}]
+  {:out (merge out
+               (case type
+                 :media-type {(keyword value) (media-type-value previous-node)}
+                 :keyword {}
+                 node)),
+   :previous-node node})
 
 (defn is-and-node?
   [{:keys [type value]}]
