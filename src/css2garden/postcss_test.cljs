@@ -59,34 +59,34 @@
                  :selector "body"}]}
        (ast->clj (parse "body { background-image: url(http://image.jpg) }")))))
 
-(defn decl-map [{:keys [prop value]}] {(keyword prop) value})
-
 (defmulti visit :type)
 
 (defmethod visit :root [{:keys [nodes]}] (first nodes))
 
-(defmethod visit :decl [ast] (decl-map ast))
-
 (defmethod visit :rule
   [{:keys [selector nodes]}]
-  [(keyword selector) (apply merge nodes)])
+  [selector
+   (reduce (fn [accum {:keys [prop value]}] (assoc accum (keyword prop) value))
+     {}
+     nodes)])
 
 (defmethod visit :default [ast] ast)
 
 (defn ast->garden [ast] (postwalk visit ast))
 
 (deftest ast->garden-test
-  (is (= [:body {:font-size "12px"}]
+  (is (= ["body" {:font-size "12px"}]
          (-> "body {font-size: 12px}"
              parse
              ast->clj
              ast->garden)))
-  (is (= [:body {:font-size "12px", :font-weight "bold"}]
+  (is (= ["body" {:font-size "12px", :font-weight "bold"}]
          (-> "body {font-size: 12px; font-weight: bold}"
              parse
              ast->clj
+             ast->garden)))
+  (is (= ["body, h1, h2" {:font-size "12px", :font-weight "bold"}]
+         (-> "body, h1, h2 {font-size: 12px; font-weight: bold}"
+             parse
+             ast->clj
              ast->garden))))
-
-(deftest decl-map-test
-  (is (= {:font-size "12px"}
-         (decl-map {:type :decl, :prop "font-size", :value "12px"}))))
