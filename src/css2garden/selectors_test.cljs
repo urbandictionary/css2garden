@@ -24,7 +24,32 @@
   (is (= [[{:type :tag, :name "body"}]] (parse "body")))
   (is (= [[{:type :tag, :name "body"} {:type :descendant}
            {:type :tag, :name "h1"}]]
-         (parse "body h1"))))
+         (parse "body h1")))
+  (is (= [[{:type :pseudo-element, :name "-moz-selection"}]]
+         (parse "::-moz-selection")))
+  (is (= [[{:type :attribute,
+            :name "class",
+            :action "element",
+            :value "alpha",
+            :ignoreCase false} {:type :pseudo, :name "first-letter", :data nil}]
+          [{:type :attribute,
+            :name "class",
+            :action "element",
+            :value "bravo",
+            :ignoreCase false} {:type :pseudo, :name "first-line", :data nil}]]
+         (parse ".alpha:first-letter, .bravo:first-line")))
+  (is (= [[{:type :tag, :name "li"}
+           {:type :pseudo, :name "nth-child", :data "2n+3"}]]
+         (parse "li:nth-child(2n+3)")))
+  (is (= [[{:type :tag, :name "a"}
+           {:type :pseudo,
+            :name "not",
+            :data [[{:type :attribute,
+                     :name "class",
+                     :action "element",
+                     :value "internal",
+                     :ignoreCase false}]]}]]
+         (parse "a:not(.internal)"))))
 
 (defn garden-selector
   [selector decls]
