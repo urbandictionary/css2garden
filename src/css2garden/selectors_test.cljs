@@ -62,7 +62,9 @@
                      :action "element",
                      :value "dialog",
                      :ignoreCase false}]]}]]
-         (parse ":not(.important.dialog)"))))
+         (parse ":not(.important.dialog)")))
+  (is (= [[{:type :tag, :name "p"} {:type :pseudo, :name "lang", :data "it"}]]
+         (parse "p:lang(it)"))))
 
 (defn garden-selector
   [selector decls]
