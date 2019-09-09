@@ -49,13 +49,15 @@
                    :nodes [{:type :decl, :prop "font-size", :value "12px"}
                            {:type :decl, :prop "font-weight", :value "bold"}],
                    :selector "body"}]}
-         (ast->clj (parse "body { font-size: 12px; font-weight: bold; }")))))
-
-
-
-
-
-
+         (ast->clj (parse "body { font-size: 12px; font-weight: bold; }"))))
+  (is
+    (= {:type :root,
+        :nodes [{:type :rule,
+                 :nodes [{:type :decl,
+                          :prop "background-image",
+                          :value "url(http://image.jpg)"}],
+                 :selector "body"}]}
+       (ast->clj (parse "body { background-image: url(http://image.jpg) }")))))
 
 (defn decl-map [{:keys [prop value]}] {(keyword prop) value})
 
