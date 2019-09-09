@@ -20,6 +20,10 @@
            [:body [:h1 {:font-size "18px"}] :body [:h2 {:font-size "18px"}]]
          "body,h1{font-size:18px}" [:body :h1 {:font-size "18px"}]
          "a:not(.internal){}" [(s/a (s/not :.internal)) {}]
+         "li:nth-child(2n+3){}" [(s/li (s/nth-child "2n+3")) {}]
+         ".alpha::first-letter,.bravo::first-line{}"
+           [((s/selector :.alpha) s/first-letter)
+            ((s/selector :.bravo) s/first-line) {}]
          ":not(.important.dialog){font-size:18px}" [(s/not :.important.dialog)
                                                     {:font-size "18px"}]
          "p:lang(it){font-size:18px}" [(s/p (s/lang :it)) {:font-size "18px"}]
