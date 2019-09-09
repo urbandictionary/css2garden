@@ -27,6 +27,8 @@
          ":not(.important.dialog){font-size:18px}" [(s/not :.important.dialog)
                                                     {:font-size "18px"}]
          "p:lang(it){font-size:18px}" [(s/p (s/lang :it)) {:font-size "18px"}]
+         "funny-selector:lang(urr) > b{font-size:18px}"
+           ["funny-selector:lang(urr) > b" {:font-size "18px"}]
          "@media screen{h1{a:b}}" [(at-media {:screen true} [:h1 {:a :b}])])))
 
 (deftest at-media-test
