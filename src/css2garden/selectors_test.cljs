@@ -49,7 +49,20 @@
                      :action "element",
                      :value "internal",
                      :ignoreCase false}]]}]]
-         (parse "a:not(.internal)"))))
+         (parse "a:not(.internal)")))
+  (is (= [[{:type :pseudo,
+            :name "not",
+            :data [[{:type :attribute,
+                     :name "class",
+                     :action "element",
+                     :value "important",
+                     :ignoreCase false}
+                    {:type :attribute,
+                     :name "class",
+                     :action "element",
+                     :value "dialog",
+                     :ignoreCase false}]]}]]
+         (parse ":not(.important.dialog)"))))
 
 (defn garden-selector
   [selector decls]
