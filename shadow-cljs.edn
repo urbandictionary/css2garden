@@ -1,15 +1,5 @@
 ;; shadow-cljs configuration
-{:source-paths
- ["src"]
-
- :dependencies
- [[garden "1.3.9"]]
-
- :builds
- {:repl
-  {:target :node}
-  :test
-  {:target    :node-test
-   :output-to "out/node-tests.js"
-   :ns-regexp "-test$"
-   :autorun   true}}}
+{:builds {:repl {:target :node}
+          :test {:autorun true :ns-regexp "-test$" :output-to "out/node-tests.js" :target :node-test}}
+ :dependencies [[garden "1.3.9"]]
+ :source-paths ["src" "test"]}
