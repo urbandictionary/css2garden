@@ -1,4 +1,5 @@
 (ns css2garden.garden-test
+  "Hello world tests to confirm how garden works"
   (:require [clojure.test :refer [deftest is are testing]]
             [garden.core :as garden]
             [garden.units :refer [px]]
