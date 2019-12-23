@@ -1,25 +1,28 @@
 (ns css2garden.mediaquery
-  (:require
-   [clojure.walk :refer [postwalk]]
-   postcss-media-query-parser))
+  (:require [clojure.walk :refer [postwalk]]
+            postcss-media-query-parser))
 
 (defn node->clj
   [node]
   (cond-> {:type (keyword (.-type node))}
     (.-value node) (assoc :value (.-value node))
     (.-selectors node) (assoc :selectors
-                              (-> node
-                                  .-selectors
-                                  js->clj))
+                         (-> node
+                             .-selectors
+                             js->clj))
     (seq (.-nodes node)) (assoc :nodes
-                                (->> node
-                                     .-nodes
-                                     (map node->clj)
-                                     (into [])))))
+                           (->> node
+                                .-nodes
+                                (map node->clj)
+                                (into [])))))
 
-(defn mediaquery->ast [input] (node->clj ((.. postcss-media-query-parser -default) input)))
+(defn mediaquery->ast
+  [input]
+  (node->clj ((.. postcss-media-query-parser -default) input)))
 
-(defn media-feature-map [nodes] (reduce (fn [accum {:keys [type value]}] (assoc accum type value)) {} nodes))
+(defn media-feature-map
+  [nodes]
+  (reduce (fn [accum {:keys [type value]}] (assoc accum type value)) {} nodes))
 
 (defn media-type-value
   [{:keys [type value]}]
@@ -28,15 +31,17 @@
     true))
 
 (defn media-query-reduce
-  [{:as accum :keys [previous-node out]} {:as node :keys [type value]}]
+  [{:as accum, :keys [previous-node out]} {:as node, :keys [type value]}]
   {:out (merge out
                (case type
                  :media-type {(keyword value) (media-type-value previous-node)}
                  :keyword {}
-                 node))
+                 node)),
    :previous-node node})
 
-(defn and-keyword-node? [{:keys [type value]}] (and (= :keyword type) (= "and" value)))
+(defn and-keyword-node?
+  [{:keys [type value]}]
+  (and (= :keyword type) (= "and" value)))
 
 (defmulti visitor :type)
 
