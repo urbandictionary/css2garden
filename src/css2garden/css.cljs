@@ -1,4 +1,4 @@
-(ns css2garden.postcss
+(ns css2garden.css
   (:require [css2garden.mediaquery :as mq]
             [clojure.walk :refer [postwalk]]))
 

@@ -1,7 +1,7 @@
-(ns css2garden.postcss-test
+(ns css2garden.css-test
   (:require [clojure.test :refer [deftest is are]]
             [postcss :refer [parse]]
-            [css2garden.postcss :refer [ast->garden]]
+            [css2garden.css :refer [ast->garden]]
             [css2garden.ast :refer [ast->clj]]))
 
 (deftest parse-test
