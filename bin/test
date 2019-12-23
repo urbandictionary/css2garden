@@ -1,3 +1,5 @@
 #!/bin/sh
 
+set -ex
+
 yarn exec shadow-cljs watch test
