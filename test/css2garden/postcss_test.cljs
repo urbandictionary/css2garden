@@ -1,8 +1,7 @@
 (ns css2garden.postcss-test
   (:require [clojure.test :refer [deftest is are]]
-            [css2garden.mediaquery :as mq]
             [postcss :refer [parse]]
-            [clojure.walk :refer [postwalk]]
+            [css2garden.postcss :refer [ast->garden]]
             [css2garden.ast :refer [ast->clj]]))
 
 (deftest parse-test
@@ -59,27 +58,6 @@
                  :type :rule}],
         :type :root}
        (ast->clj (parse "body { background-image: url(http://image.jpg) }")))))
-
-(defmulti visit :type)
-
-(defmethod visit :root [{:keys [nodes]}] nodes)
-
-(defmethod visit :rule
-  [{:keys [selector nodes]}]
-  [selector
-   (reduce (fn [accum {:keys [prop value]}] (assoc accum (keyword prop) value))
-     {}
-     nodes)])
-
-(defmethod visit :atrule
-  [{:keys [params nodes]}]
-  (list 'at-media
-        (mq/ast->garden (mq/mediaquery->ast params))
-        (apply concat nodes)))
-
-(defmethod visit :default [ast] ast)
-
-(defn ast->garden [ast] (postwalk visit ast))
 
 (deftest ast->garden-test
   (is (= [["body" {:font-size "12px"}]]
