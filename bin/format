@@ -1,5 +1,15 @@
 #!/usr/bin/env bash
 
-set -ex
+set -euf -o pipefail
 
-cat "$1" | /usr/local/bin/zprint | sponge "$1"
+case "$1" in
+  all)
+    for i in $(find . -name \*.cljs); do
+      $0 $i
+    done
+    ;;
+  *)
+    echo "Formatting $1"
+    cat "$1" | /usr/local/bin/zprint | sponge "$1"
+    ;;
+esac

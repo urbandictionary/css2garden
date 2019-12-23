@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 
-set -ex
+set -eufx -o pipefail
 
 rlwrap yarn exec shadow-cljs node-repl repl
