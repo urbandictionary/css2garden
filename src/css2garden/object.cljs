@@ -1,4 +1,4 @@
-(ns css2garden.ast
+(ns css2garden.object
   "Convert from Javascript class instance to ClojureScript hash map"
   (:require [clojure.walk :refer [postwalk]]))
 

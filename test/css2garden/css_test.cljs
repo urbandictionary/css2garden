@@ -2,7 +2,7 @@
   (:require [clojure.test :refer [deftest is are]]
             [postcss :refer [parse]]
             [css2garden.css :refer [ast->garden]]
-            [css2garden.ast :refer [ast->clj]]))
+            [css2garden.object :refer [ast->clj]]))
 
 (deftest parse-test
   (is
