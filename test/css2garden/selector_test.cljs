@@ -1,9 +1,6 @@
-(ns css2garden.selectors-test
-  (:require css-what
-            [css2garden.ast :refer [ast->clj]]
+(ns css2garden.selector-test
+  (:require [css2garden.selector :refer [parse garden-selector]]
             [clojure.test :refer [deftest is are]]))
-
-(defn parse [input] (ast->clj (css-what/parse input)))
 
 (deftest parse-test
   (is (= [[{:type :tag, :name "a"}
@@ -65,10 +62,6 @@
          (parse ":not(.important.dialog)")))
   (is (= [[{:type :tag, :name "p"} {:type :pseudo, :name "lang", :data "it"}]]
          (parse "p:lang(it)"))))
-
-(defn garden-selector
-  [selector decls]
-  (let [parsed (parse selector)] [(keyword (:name (ffirst parsed))) decls]))
 
 (deftest garden-selector-test
   (is (= [:body {:font-size "12px"}]
