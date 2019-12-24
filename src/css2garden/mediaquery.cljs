@@ -17,6 +17,7 @@
                                 (into [])))))
 
 (defn mediaquery->ast
+  "Converts from a media query (`only screen and (orientation: landscape)`) to an AST"
   [input]
   (node->clj ((.. postcss-media-query-parser -default) input)))
 
@@ -63,4 +64,7 @@
 
 (defn try-first [value] (if (= 1 (count value)) (first value) value))
 
-(defn ast->garden [ast] (try-first (postwalk visitor ast)))
+(defn ast->garden
+  [ast]
+  "Converts from an AST to garden's mediaquery syntax (`{:orientation \"landscape\", :screen :only}`)"
+  (try-first (postwalk visitor ast)))
