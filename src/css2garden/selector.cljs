@@ -1,11 +1,8 @@
 (ns css2garden.selector
-  (:require css-what
+  (:require postcss-selector-parser
             [css2garden.ast :refer [ast->clj]]))
 
-
-(defn parse [input] (ast->clj (css-what/parse input)))
-
-
-(defn garden-selector
-  [selector decls]
-  (let [parsed (parse selector)] [(keyword (:name (ffirst parsed))) decls]))
+(defn selector->ast
+  [input]
+  #_(ast->clj (.. (postcss-selector-parser) (astSync input)))
+  [])
