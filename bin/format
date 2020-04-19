@@ -10,6 +10,8 @@ case "$1" in
     ;;
   *)
     echo "Formatting $1"
-    cat "$1" | /usr/local/bin/zprint | sponge "$1"
+    output=$(mktemp)
+    zprintm <"$1" >"$output"
+    cat "$output" > "$1"
     ;;
 esac
