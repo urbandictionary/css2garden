@@ -61,7 +61,7 @@
                 .highlight"
                     {:color "red"}))))
   (testing
-    "pseudo classes"
+    "pseudo-classes"
     (is (= [[:a:active {:color "red"}]]
            (ast-selector->garden-selector "a:active" {:color "red"})))
     (is (= [[:body [:#container [:a:active {:color "red"}]]]]
@@ -72,6 +72,14 @@
                                           {:color "red"})))
     (is (= [[:body [:p:nth-child {:color "red"}]]]
            (ast-selector->garden-selector "body p:nth-child" {:color "red"}))))
+  (testing "pseudo-elements"
+           (is (= [[(keyword "a::after") {:color "red"}]]
+                  (ast-selector->garden-selector "a::after" {:color "red"})))
+           (is (= [[:a:after {:color "red"}]]
+                  (ast-selector->garden-selector "a:after" {:color "red"})))
+           (is (= [[(keyword "a::first-line") {:color "red"}]]
+                  (ast-selector->garden-selector "a::first-line"
+                                                 {:color "red"}))))
   (testing
     "attribute selectors"
     (is (= [[:form ["input[type=\"text\"]" {:color "red"}]]]
