@@ -1,6 +1,7 @@
 (ns css2garden.selector-test
-  (:require [css2garden.selector :refer [selector->ast]]
-            [clojure.test :refer [deftest is are]]))
+  (:require [css2garden.selector :refer
+             [ast-selector->garden-selector selector->ast]]
+            [clojure.test :refer [deftest is are testing]]))
 
 (deftest selector->ast-test
   (is (= {:source {:start {:line 1, :column 1}, :end {:line 1, :column 2}},
@@ -23,3 +24,11 @@
          "::-moz-selection" ".alpha:first-letter, .bravo:first-line"
          "li:nth-child(2n+3)" "a:not(.internal)"
          ":not(.important.dialog)" "p:lang(it)")
+
+(deftest ast-selector->garden-selector-test
+  (testing "tag selector"
+           (is (= [[:h1 {:font-weight "bold"}]]
+                  (ast-selector->garden-selector "h1" {:font-weight "bold"}))))
+  (testing "combined tag selector"
+           (is (= [[:h1 [:div {:font-size 12}]]]
+                  (ast-selector->garden-selector "h1 div" {:font-size 12})))))
