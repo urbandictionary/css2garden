@@ -60,6 +60,18 @@
                 (ast-selector->garden-selector "#block a + b > span .highlight"
                                                {:color "red"}))))
   (testing
+    "pseudo classes"
+    (is (= [[:a:active {:color "red"}]]
+           (ast-selector->garden-selector "a:active" {:color "red"})))
+    (is (= [[:body [:#container [:a:active {:color "red"}]]]]
+           (ast-selector->garden-selector "body #container a:active"
+                                          {:color "red"})))
+    (is (= [[:form [:input:checked [:&+label {:color "red"}]]]]
+           (ast-selector->garden-selector "form input:checked + label"
+                                          {:color "red"})))
+    (is (= [[:body [:p:nth-child {:color "red"}]]]
+           (ast-selector->garden-selector "body p:nth-child" {:color "red"}))))
+  (testing
     "multiple selectors"
     (is (= [[:h1 {:font-weight "bold"}] [:h2 {:font-weight "bold"}]]
            (ast-selector->garden-selector "h1, h2" {:font-weight "bold"})))
