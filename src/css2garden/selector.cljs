@@ -15,27 +15,23 @@
     (str "&" combinator)))
 
 (defn- render-selector
-  [value prefix combinator next-node]
-  (condp = (or (and (some? next-node) (.-type next-node)) "")
-    "attribute"
-      (str (render-combinator combinator) prefix value (.toString next-node))
-    "pseudo"
-      (keyword
-        (str (render-combinator combinator) prefix value (.toString next-node)))
-    (keyword (str (render-combinator combinator) prefix value))))
+  [node combinator next-node]
+  (let [combinator (render-combinator combinator)
+        prefix (condp = (.-type node) "class" "." "id" "#" "")
+        value (.-value node)]
+    (condp = (or (and (some? next-node) (.-type next-node)) "")
+      "attribute" (str combinator prefix value (.toString next-node))
+      "pseudo" (keyword (str combinator prefix value (.toString next-node)))
+      (keyword (str combinator prefix value)))))
 
 (defn- build-garden-selector
   [[node & nodes] combinator garden-prop]
   (if (nil? node)
     garden-prop
-    (condp = (.-type node)
-      "combinator" (build-garden-selector nodes (.-value node) garden-prop)
-      "tag" [(render-selector (.-value node) "" combinator (first nodes))
-             (build-garden-selector nodes "" garden-prop)]
-      "class" [(render-selector (.-value node) "." combinator (first nodes))
-               (build-garden-selector nodes "" garden-prop)]
-      "id" [(render-selector (.-value node) "#" combinator (first nodes))
-            (build-garden-selector nodes "" garden-prop)]
+    (condp contains? (.-type node)
+      #{"combinator"} (build-garden-selector nodes (.-value node) garden-prop)
+      #{"tag" "class" "id"} [(render-selector node combinator (first nodes))
+                             (build-garden-selector nodes "" garden-prop)]
       (build-garden-selector nodes "" garden-prop))))
 
 (defn ast-selector->garden-selector
