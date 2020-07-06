@@ -16,11 +16,13 @@
 
 (defn- render-selector
   [value prefix combinator next-node]
-  (keyword (str (render-combinator combinator)
-                prefix
-                value
-                (when (and (some? next-node) (= (.-type next-node) "pseudo"))
-                  (.-value next-node)))))
+  (condp = (or (and (some? next-node) (.-type next-node)) "")
+    "attribute"
+      (str (render-combinator combinator) prefix value (.toString next-node))
+    "pseudo"
+      (keyword
+        (str (render-combinator combinator) prefix value (.toString next-node)))
+    (keyword (str (render-combinator combinator) prefix value))))
 
 (defn- build-garden-selector
   [[node & nodes] combinator garden-prop]

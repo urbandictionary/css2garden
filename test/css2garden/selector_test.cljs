@@ -55,10 +55,11 @@
            (is (= [[:h1 [:&+span {:color "#fae"}]]]
                   (ast-selector->garden-selector "h1 + span" {:color "#fae"}))))
   (testing "mixed selector"
-           (is
-             (= [[:#block [:a [:&+b [:&>span [:.highlight {:color "red"}]]]]]]
-                (ast-selector->garden-selector "#block a + b > span .highlight"
-                                               {:color "red"}))))
+           (is (= [[:#block [:a [:&+b [:&>span [:.highlight {:color "red"}]]]]]]
+                  (ast-selector->garden-selector
+                    "#block a + b > span
+                .highlight"
+                    {:color "red"}))))
   (testing
     "pseudo classes"
     (is (= [[:a:active {:color "red"}]]
@@ -71,6 +72,21 @@
                                           {:color "red"})))
     (is (= [[:body [:p:nth-child {:color "red"}]]]
            (ast-selector->garden-selector "body p:nth-child" {:color "red"}))))
+  (testing
+    "attribute selectors"
+    (is (= [[:form ["input[type=\"text\"]" {:color "red"}]]]
+           (ast-selector->garden-selector "form input[type=\"text\"]"
+                                          {:color "red"})))
+    (is (= [["a[src~=\"https\"]" {:color "red"}]]
+           (ast-selector->garden-selector "a[src~=\"https\"]" {:color "red"})))
+    (is (= [["a[src|=\"https\"]" {:color "red"}]]
+           (ast-selector->garden-selector "a[src|=\"https\"]" {:color "red"})))
+    (is (= [["a[src^=\"https\"]" {:color "red"}]]
+           (ast-selector->garden-selector "a[src^=\"https\"]" {:color "red"})))
+    (is (= [["a[src$=\"https\"]" {:color "red"}]]
+           (ast-selector->garden-selector "a[src$=\"https\"]" {:color "red"})))
+    (is (= [["a[src*=\"https\"]" {:color "red"}]]
+           (ast-selector->garden-selector "a[src*=\"https\"]" {:color "red"}))))
   (testing
     "multiple selectors"
     (is (= [[:h1 {:font-weight "bold"}] [:h2 {:font-weight "bold"}]]
