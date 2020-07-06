@@ -40,12 +40,25 @@
            (is (= [[:.text [:.bold {:font-weight "bold"}]]]
                   (ast-selector->garden-selector ".text .bold"
                                                  {:font-weight "bold"}))))
+  (testing "id selector"
+           (is (= [[:#bold {:font-weight "bold"}]]
+                  (ast-selector->garden-selector "#bold"
+                                                 {:font-weight "bold"}))))
+  (testing "combined id selector"
+           (is (= [[:#text [:#bold {:font-weight "bold"}]]]
+                  (ast-selector->garden-selector "#text #bold"
+                                                 {:font-weight "bold"}))))
   (testing "direct child combinator"
            (is (= [[:h1 [:&>span {:color "#fae"}]]]
                   (ast-selector->garden-selector "h1 > span" {:color "#fae"}))))
   (testing "siblings combinator"
            (is (= [[:h1 [:&+span {:color "#fae"}]]]
                   (ast-selector->garden-selector "h1 + span" {:color "#fae"}))))
+  (testing "mixed selector"
+           (is
+             (= [[:#block [:a [:&+b [:&>span [:.highlight {:color "red"}]]]]]]
+                (ast-selector->garden-selector "#block a + b > span .highlight"
+                                               {:color "red"}))))
   (testing
     "multiple selectors"
     (is (= [[:h1 {:font-weight "bold"}] [:h2 {:font-weight "bold"}]]

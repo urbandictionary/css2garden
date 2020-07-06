@@ -22,7 +22,9 @@
       "tag" [(keyword (str combinator (.-value node)))
              (parse-selector-nodes nodes "" garden-prop)]
       "class" [(keyword (str combinator "." (.-value node)))
-               (parse-selector-nodes nodes "" garden-prop)])))
+               (parse-selector-nodes nodes "" garden-prop)]
+      "id" [(keyword (str combinator "#" (.-value node)))
+            (parse-selector-nodes nodes "" garden-prop)])))
 
 (defn ast-selector->garden-selector
   [selector garden-prop]
