@@ -31,4 +31,12 @@
                   (ast-selector->garden-selector "h1" {:font-weight "bold"}))))
   (testing "combined tag selector"
            (is (= [[:h1 [:div {:font-size 12}]]]
-                  (ast-selector->garden-selector "h1 div" {:font-size 12})))))
+                  (ast-selector->garden-selector "h1 div" {:font-size 12}))))
+  (testing "class selector"
+           (is (= [[:.bold {:font-weight "bold"}]]
+                  (ast-selector->garden-selector ".bold"
+                                                 {:font-weight "bold"}))))
+  (testing "combined class selector"
+           (is (= [[:.text [:.bold {:font-weight "bold"}]]]
+                  (ast-selector->garden-selector ".text .bold"
+                                                 {:font-weight "bold"})))))

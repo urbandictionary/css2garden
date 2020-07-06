@@ -14,7 +14,9 @@
     garden-prop
     (condp = (.-type node)
       "tag" [(keyword (.-value node))
-             (parse-selector-nodes (rest nodes) garden-prop)])))
+             (parse-selector-nodes (rest nodes) garden-prop)]
+      "class" [(keyword (str "." (.-value node)))
+               (parse-selector-nodes (rest nodes) garden-prop)])))
 
 (defn ast-selector->garden-selector
   [selector garden-prop]
