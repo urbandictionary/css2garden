@@ -9,14 +9,18 @@
 (defn- is-selector? [selector-node] (= (.-type selector-node) "selector"))
 
 (defn- parse-selector-nodes
-  [[node & nodes] garden-prop]
+  [[node & nodes] combinator garden-prop]
   (if (nil? node)
     garden-prop
     (condp = (.-type node)
-      "tag" [(keyword (.-value node))
-             (parse-selector-nodes (rest nodes) garden-prop)]
-      "class" [(keyword (str "." (.-value node)))
-               (parse-selector-nodes (rest nodes) garden-prop)])))
+      "combinator" (parse-selector-nodes
+                     nodes
+                     (if (= (.-value node) " ") "" (.-value node))
+                     garden-prop)
+      "tag" [(keyword (str combinator (.-value node)))
+             (parse-selector-nodes nodes "" garden-prop)]
+      "class" [(keyword (str combinator "." (.-value node)))
+               (parse-selector-nodes nodes "" garden-prop)])))
 
 (defn ast-selector->garden-selector
   [selector garden-prop]
@@ -29,4 +33,4 @@
     (.. (postcss-selector-parser transform-fn) (processSync selector))
     (if (empty? @selectors)
       [selector garden-prop]
-      (map #(parse-selector-nodes (.-nodes %) garden-prop) @selectors))))
+      (map #(parse-selector-nodes (.-nodes %) "" garden-prop) @selectors))))
