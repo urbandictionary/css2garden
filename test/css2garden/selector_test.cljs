@@ -39,4 +39,18 @@
   (testing "combined class selector"
            (is (= [[:.text [:.bold {:font-weight "bold"}]]]
                   (ast-selector->garden-selector ".text .bold"
-                                                 {:font-weight "bold"})))))
+                                                 {:font-weight "bold"}))))
+  (testing
+    "multiple selectors"
+    (is (= [[:h1 {:font-weight "bold"}] [:h2 {:font-weight "bold"}]]
+           (ast-selector->garden-selector "h1, h2" {:font-weight "bold"})))
+    (is (= [[:h1 [:a {:font-weight "bold"}]] [:h2 [:b {:font-weight "bold"}]]]
+           (ast-selector->garden-selector "h1 a, h2 b" {:font-weight "bold"})))
+    (is (= [[:h1 {:font-weight "bold"}] [:.bold {:font-weight "bold"}]]
+           (ast-selector->garden-selector "h1, .bold" {:font-weight "bold"})))
+    (is
+      (= [[:h1 [:strong {:font-weight "bold"}]] [:h1 [:b {:font-weight "bold"}]]
+          [:h2 [:strong {:font-weight "bold"}]]
+          [:h2 [:b {:font-weight "bold"}]]]
+         (ast-selector->garden-selector "h1 strong, h1 b, h2 strong, h2 b"
+                                        {:font-weight "bold"})))))
