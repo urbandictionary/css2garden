@@ -8,15 +8,17 @@
 
 (defn- is-selector? [selector-node] (= (.-type selector-node) "selector"))
 
+(defn- extract-combinator
+  [node]
+  (if (= (.-value node) " ") "" (str "&" (.-value node))))
+
 (defn- parse-selector-nodes
   [[node & nodes] combinator garden-prop]
   (if (nil? node)
     garden-prop
     (condp = (.-type node)
-      "combinator" (parse-selector-nodes
-                     nodes
-                     (if (= (.-value node) " ") "" (.-value node))
-                     garden-prop)
+      "combinator"
+        (parse-selector-nodes nodes (extract-combinator node) garden-prop)
       "tag" [(keyword (str combinator (.-value node)))
              (parse-selector-nodes nodes "" garden-prop)]
       "class" [(keyword (str combinator "." (.-value node)))

@@ -41,10 +41,10 @@
                   (ast-selector->garden-selector ".text .bold"
                                                  {:font-weight "bold"}))))
   (testing "direct child combinator"
-           (is (= [[:h1 [:>span {:color "#fae"}]]]
+           (is (= [[:h1 [:&>span {:color "#fae"}]]]
                   (ast-selector->garden-selector "h1 > span" {:color "#fae"}))))
   (testing "siblings combinator"
-           (is (= [[:h1 [:+span {:color "#fae"}]]]
+           (is (= [[:h1 [:&+span {:color "#fae"}]]]
                   (ast-selector->garden-selector "h1 + span" {:color "#fae"}))))
   (testing
     "multiple selectors"
