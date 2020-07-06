@@ -6,25 +6,26 @@
   [input]
   (obj->clj (.. (postcss-selector-parser) (astSync input))))
 
-(defn- is-selector? [selector-node] (= (.-type selector-node) "selector"))
+(defn- is-selector-node? [node] (= (.-type node) "selector"))
 
-(defn- extract-combinator
+(defn- extract-combinator-value
   [node]
   (if (= (.-value node) " ") "" (str "&" (.-value node))))
 
-(defn- parse-selector-nodes
+(defn- build-garden-selector
   [[node & nodes] combinator garden-prop]
   (if (nil? node)
     garden-prop
     (condp = (.-type node)
-      "combinator"
-        (parse-selector-nodes nodes (extract-combinator node) garden-prop)
+      "combinator" (build-garden-selector nodes
+                                          (extract-combinator-value node)
+                                          garden-prop)
       "tag" [(keyword (str combinator (.-value node)))
-             (parse-selector-nodes nodes "" garden-prop)]
+             (build-garden-selector nodes "" garden-prop)]
       "class" [(keyword (str combinator "." (.-value node)))
-               (parse-selector-nodes nodes "" garden-prop)]
+               (build-garden-selector nodes "" garden-prop)]
       "id" [(keyword (str combinator "#" (.-value node)))
-            (parse-selector-nodes nodes "" garden-prop)])))
+            (build-garden-selector nodes "" garden-prop)])))
 
 (defn ast-selector->garden-selector
   [selector garden-prop]
@@ -32,9 +33,9 @@
         transform-fn (fn [root-selectors]
                        (.walk root-selectors
                               (fn [node]
-                                (when (is-selector? node)
+                                (when (is-selector-node? node)
                                   (swap! selectors conj node)))))]
     (.. (postcss-selector-parser transform-fn) (processSync selector))
     (if (empty? @selectors)
       [selector garden-prop]
-      (map #(parse-selector-nodes (.-nodes %) "" garden-prop) @selectors))))
+      (map #(build-garden-selector (.-nodes %) "" garden-prop) @selectors))))
