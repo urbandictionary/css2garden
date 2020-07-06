@@ -19,9 +19,12 @@
 (defn ast-selector->garden-selector
   [selector garden-prop]
   (let [selectors (atom [])
-        transform-fn (fn [sel] (.walk sel #(swap! selectors conj %)))]
+        transform-fn (fn [root-selectors]
+                       (.walk root-selectors
+                              (fn [node]
+                                (when (is-selector? node)
+                                  (swap! selectors conj node)))))]
     (.. (postcss-selector-parser transform-fn) (processSync selector))
     (if (empty? @selectors)
       [selector garden-prop]
-      (map #(parse-selector-nodes (.-nodes %) garden-prop)
-        (filter is-selector? @selectors)))))
+      (map #(parse-selector-nodes (.-nodes %) garden-prop) @selectors))))
