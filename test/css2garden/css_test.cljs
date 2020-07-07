@@ -99,4 +99,61 @@
         "
         parse
         ast->clj
-        ast->garden))))
+        ast->garden)))
+  (is (= [[[:h1 {:color "#f00"}] [:div {:color "#f00"}]]]
+         (-> "h1, div { color: #f00; }"
+             parse
+             ast->clj
+             ast->garden)))
+  (is (= [[[:.container [:.text {:color "#f00"}]]]]
+         (-> ".container .text { color: #f00; }"
+             parse
+             ast->clj
+             ast->garden)))
+  (is (= [[[:#container [:#text {:color "#f00"}]]]]
+         (-> "#container #text { color: #f00; }"
+             parse
+             ast->clj
+             ast->garden)))
+  (is (= [[[:h1 [:&>span {:color "#f00"}]]]]
+         (-> "h1 > span { color: #f00; }"
+             parse
+             ast->clj
+             ast->garden)))
+  (is (= [[[:h1 [:&+span {:color "#f00"}]]]]
+         (-> "h1 + span { color: #f00; }"
+             parse
+             ast->clj
+             ast->garden)))
+  (is (= [[[:h1 [(keyword "&~span") {:color "#f00"}]]]]
+         (-> "h1 ~ span { color: #f00; }"
+             parse
+             ast->clj
+             ast->garden)))
+  (is (= [[[:#block [:a [:&+b [:&>span [:.highlight {:color "#f00"}]]]]]]]
+         (-> "#block a + b > span .highlight { color: #f00; }"
+             parse
+             ast->clj
+             ast->garden)))
+  (is (= [[[:div:focus [:a:active [(keyword "i::after") {:color "#f00"}]]]]]
+         (-> "div:focus a:active i::after { color: #f00; }"
+             parse
+             ast->clj
+             ast->garden)))
+  (is
+    (=
+      [[["a[a=\"a\"]"
+         ["b[b^=\"b\"]"
+          ["c[c~=\"c\"]"
+           ["d[d|=\"d\"]" ["d[d$=\"d\"]" ["e[e*=\"e\"]" {:color "#f00"}]]]]]]]]
+      (->
+        "a[a=\"a\"] b[b^=\"b\"] c[c~=\"c\"] d[d|=\"d\"] d[d$=\"d\"] e[e*=\"e\"] { color: #f00; }"
+        parse
+        ast->clj
+        ast->garden)))
+  (is (= [[[:h1 [:strong {:color "#f00"}]] [:h1 [:b {:color "#f00"}]]
+           [:h2 [:strong {:color "#f00"}]] [:h2 [:b {:color "#f00"}]]]]
+         (-> "h1 strong, h1 b, h2 strong, h2 b { color: #f00; }"
+             parse
+             ast->clj
+             ast->garden))))

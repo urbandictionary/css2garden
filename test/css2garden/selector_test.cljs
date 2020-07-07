@@ -46,13 +46,15 @@
   (testing "direct child combinator"
            (is (= [[:h1 [:&>span {:color "#fae"}]]]
                   (ast->garden "h1 > span" {:color "#fae"}))))
-  (testing "siblings combinator"
+  (testing "adjacent combinator"
            (is (= [[:h1 [:&+span {:color "#fae"}]]]
                   (ast->garden "h1 + span" {:color "#fae"}))))
+  (testing "sibling combinator"
+           (is (= [[:h1 [(keyword "&~span") {:color "#fae"}]]]
+                  (ast->garden "h1 ~ span" {:color "#fae"}))))
   (testing "mixed selector"
            (is (= [[:#block [:a [:&+b [:&>span [:.highlight {:color "red"}]]]]]]
-                  (ast->garden "#block a + b > span
-                .highlight"
+                  (ast->garden "#block a + b > span .highlight"
                                {:color "red"}))))
   (testing "pseudo-classes"
            (is (= [[:a:active {:color "red"}]]
