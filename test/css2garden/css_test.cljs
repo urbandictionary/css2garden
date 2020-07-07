@@ -156,4 +156,14 @@
          (-> "h1 strong, h1 b, h2 strong, h2 b { color: #f00; }"
              parse
              ast->clj
-             ast->garden))))
+             ast->garden)))
+  (is
+    (=
+      [[["a[attr=\"test\"]:hover::after"
+         ["b[attr=\"ud\"]:focus::before"
+          [(keyword "c:active::after") {:color "#f00"}]]]]]
+      (->
+        "a[attr=\"test\"]:hover::after b[attr=\"ud\"]:focus::before c:active::after { color: #f00; }"
+        parse
+        ast->clj
+        ast->garden))))
