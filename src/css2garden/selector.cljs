@@ -1,6 +1,7 @@
 (ns css2garden.selector
   (:require postcss-selector-parser
-            [css2garden.object :refer [obj->clj]]))
+            [css2garden.object :refer [obj->clj]]
+            [clojure.string :as str]))
 
 (defn selector->ast
   [input]
@@ -15,14 +16,18 @@
     (str "&" combinator)))
 
 (defn- render-selector
-  [node combinator next-node]
+  [node combinator rest-nodes]
   (let [combinator (render-combinator combinator)
         prefix (condp = (.-type node) "class" "." "id" "#" "")
-        value (.-value node)]
-    (condp = (or (and (some? next-node) (.-type next-node)) "")
-      "attribute" (str combinator prefix value (.toString next-node))
-      "pseudo" (keyword (str combinator prefix value (.toString next-node)))
-      (keyword (str combinator prefix value)))))
+        postfixes (take-while #(#{"attribute" "pseudo"} (.-type %)) rest-nodes)
+        keywordize? (empty? (filter #(= "attribute" (.-type %)) postfixes))]
+    ((if keywordize? keyword identity)
+      (str/join ""
+                (map (fn [node]
+                       (if (#{"attribute" "pseudo"} (.-type node))
+                         (.toString node)
+                         (str combinator prefix (.-value node))))
+                  (cons node postfixes))))))
 
 (defn- build-garden-selector
   [[node & nodes] combinator garden-prop]
@@ -30,7 +35,7 @@
     garden-prop
     (condp contains? (.-type node)
       #{"combinator"} (build-garden-selector nodes (.-value node) garden-prop)
-      #{"tag" "class" "id"} [(render-selector node combinator (first nodes))
+      #{"tag" "class" "id"} [(render-selector node combinator nodes)
                              (build-garden-selector nodes "" garden-prop)]
       (build-garden-selector nodes "" garden-prop))))
 

@@ -86,6 +86,26 @@
            (is (= [["a[src*=\"https\"]" {:color "red"}]]
                   (ast->garden "a[src*=\"https\"]" {:color "red"}))))
   (testing
+    "mixed pseudo-classes, elements, attributes"
+    (is (= [[:a:active:hover {:color "#f00"}]]
+           (ast->garden "a:active:hover" {:color "#f00"})))
+    (is (= [[:a:active:hover:focus {:color "#f00"}]]
+           (ast->garden "a:active:hover:focus" {:color "#f00"})))
+    (is (= [[:a:active:hover:focus:first {:color "#f00"}]]
+           (ast->garden "a:active:hover:focus:first" {:color "#f00"})))
+    (is (= [["a[attr=\"test\"]:hover" {:color "#f00"}]]
+           (ast->garden "a[attr=\"test\"]:hover" {:color "#f00"})))
+    (is (= [["a[attr=\"test\"]:hover::after" {:color "#f00"}]]
+           (ast->garden "a[attr=\"test\"]:hover::after" {:color "#f00"})))
+    (is
+      (=
+        [["a[attr=\"test\"]:hover::after"
+          ["b[attr=\"ud\"]:focus::before"
+           [(keyword "c:active::after") {:color "#f00"}]]]]
+        (ast->garden
+          "a[attr=\"test\"]:hover::after b[attr=\"ud\"]:focus::before c:active::after"
+          {:color "#f00"}))))
+  (testing
     "multiple selectors"
     (is (= [[:h1 {:font-weight "bold"}] [:h2 {:font-weight "bold"}]]
            (ast->garden "h1, h2" {:font-weight "bold"})))
