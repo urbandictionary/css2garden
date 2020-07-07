@@ -60,17 +60,19 @@
        (ast->clj (parse "body { background-image: url(http://image.jpg) }")))))
 
 (deftest ast->garden-test
-  (is (= [["body" {:font-size "12px"}]]
+  (is (= [[[:body {:font-size "12px"}]]]
          (-> "body {font-size: 12px}"
              parse
              ast->clj
              ast->garden)))
-  (is (= [["body" {:font-size "12px", :font-weight "bold"}]]
+  (is (= [[[:body {:font-size "12px", :font-weight "bold"}]]]
          (-> "body {font-size: 12px; font-weight: bold}"
              parse
              ast->clj
              ast->garden)))
-  (is (= [["body, h1, h2" {:font-size "12px", :font-weight "bold"}]]
+  (is (= [[[:body {:font-size "12px", :font-weight "bold"}]
+           [:h1 {:font-size "12px", :font-weight "bold"}]
+           [:h2 {:font-size "12px", :font-weight "bold"}]]]
          (-> "body, h1, h2 {font-size: 12px; font-weight: bold}"
              parse
              ast->clj
@@ -79,8 +81,8 @@
     (=
       [(list 'at-media
              {:max-height "300px", :screen false}
-             ["h1" {:font-size "12px"} "h2" {:font-weight "bold"}])
-       ["h3" {:font-style "italic"}]]
+             [[:h1 {:font-size "12px"}] [:h2 {:font-weight "bold"}]])
+       [[:h3 {:font-style "italic"}]]]
       (->
         "
           @media not screen and (max-height: 300px) {
