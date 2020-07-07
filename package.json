@@ -6,6 +6,7 @@
   "license": "MIT",
   "dependencies": {
     "css-mediaquery": "^0.1.2",
+    "css-what": "^3.3.0",
     "postcss": "^7.0.18",
     "postcss-media-query-parser": "^0.2.3",
     "postcss-selector-parser": "^6.0.2",
