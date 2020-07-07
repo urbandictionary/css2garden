@@ -34,7 +34,7 @@
                              (build-garden-selector nodes "" garden-prop)]
       (build-garden-selector nodes "" garden-prop))))
 
-(defn ast-selector->garden-selector
+(defn ast->garden
   [selector garden-prop]
   (let [selectors (atom [])
         transform-fn (fn [root-selectors]

@@ -1,6 +1,6 @@
 (ns css2garden.css
   (:require [css2garden.mediaquery :as mq]
-            [css2garden.selector :refer [ast-selector->garden-selector]]
+            [css2garden.selector :as selector]
             [clojure.walk :refer [postwalk]]))
 
 (defmulti visit :type)
@@ -9,11 +9,11 @@
 
 (defmethod visit :rule
   [{:keys [selector nodes]}]
-  (ast-selector->garden-selector selector
-                                 (reduce (fn [accum {:keys [prop value]}]
-                                           (assoc accum (keyword prop) value))
-                                   {}
-                                   nodes)))
+  (selector/ast->garden selector
+                        (reduce (fn [accum {:keys [prop value]}]
+                                  (assoc accum (keyword prop) value))
+                          {}
+                          nodes)))
 
 (defmethod visit :atrule
   [{:keys [params nodes]}]
