@@ -71,7 +71,9 @@
            (is (= [[:a:after {:color "red"}]]
                   (ast->garden "a:after" {:color "red"})))
            (is (= [[(keyword "a::first-line") {:color "red"}]]
-                  (ast->garden "a::first-line" {:color "red"}))))
+                  (ast->garden "a::first-line" {:color "red"})))
+           (is (= [[(keyword "a::-moz-selection") {:color "red"}]]
+                  (ast->garden "a::-moz-selection" {:color "red"}))))
   (testing "attribute selectors"
            (is (= [[:form ["input[type=\"text\"]" {:color "red"}]]]
                   (ast->garden "form input[type=\"text\"]" {:color "red"})))
@@ -118,4 +120,19 @@
           [:h2 [:strong {:font-weight "bold"}]]
           [:h2 [:b {:font-weight "bold"}]]]
          (ast->garden "h1 strong, h1 b, h2 strong, h2 b"
-                      {:font-weight "bold"})))))
+                      {:font-weight "bold"})))
+    (is (= [["a[b]:c" [:d [:&>e {:color "#f00"}]]] ["f[x=y]" {:color "#f00"}]
+            [:g {:color "#f00"}]]
+           (ast->garden "a[b]:c d>e,f[x=y],g" {:color "#f00"}))))
+  (testing
+    "unsupported cases"
+    (is (= [[(keyword "li:nth-child(2n+3)") {:color "#f00"}]
+            [:2n [:&+3 {:color "#f00"}]]]
+           (ast->garden "li:nth-child(2n+3)" {:color "#f00"})))
+    (is (= [[(keyword "a:not(.internal)") {:color "#f00"}]
+            [:.internal {:color "#f00"}]]
+           (ast->garden "a:not(.internal)" {:color "#f00"})))
+    (is (= [{:color "#f00"} [:.important [:.dialog {:color "#f00"}]]]
+           (ast->garden ":not(.important.dialog)" {:color "#f00"})))
+    (is (= [[(keyword "p:lang(it)") {:color "#f00"}] [:it {:color "#f00"}]]
+           (ast->garden "p:lang(it)" {:color "#f00"})))))
