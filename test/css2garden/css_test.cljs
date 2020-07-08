@@ -140,6 +140,11 @@
              parse
              ast->clj
              ast->garden)))
+  (is (= [[["[a=\"b\"]" {:color "#f00"}]]]
+         (-> "[a=\"b\"] { color: #f00; }"
+             parse
+             ast->clj
+             ast->garden)))
   (is
     (=
       [[["a[a=\"a\"]"
@@ -168,4 +173,19 @@
         c:active::after { color: #f00; }"
         parse
         ast->clj
-        ast->garden))))
+        ast->garden)))
+  (is (= [[[(keyword ":active") {:color "#f00"}]]]
+         (-> ":active { color: #f00; }"
+             parse
+             ast->clj
+             ast->garden)))
+  (is (= [[[(keyword "*:active") {:color "#f00"}]]]
+         (-> "*:active { color: #f00; }"
+             parse
+             ast->clj
+             ast->garden)))
+  (is (= [[[:* {:color "#f00"}]]]
+         (-> "*{ color: #f00; }"
+             parse
+             ast->clj
+             ast->garden))))
