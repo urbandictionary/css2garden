@@ -17,7 +17,10 @@
 
 (defn- attribute-type
   [node]
-  (condp = (:name node) "class" "class" "id" "id" "attribute"))
+  (case (:name node)
+    "class" "class"
+    "id" "id"
+    "attribute"))
 
 (defn- node-type
   [node]
@@ -38,7 +41,7 @@
 
 (defn- attribute-value
   [node]
-  (condp = (:name node)
+  (case (:name node)
     "id" (str \# (:value node))
     "class" (str \. (:value node))
     (render-attribute-value node)))
@@ -56,14 +59,18 @@
 
 (defn- node-value
   [node]
-  (condp = (:type node)
+  (case (:type node)
     "attribute" (attribute-value node)
     "pseudo" (pseudo-value node)
     (:name node)))
 
 (defn- render-combinator
   [combinator]
-  (condp = combinator "child" "&>" "adjacent" "&+" "sibling" "&~" ""))
+  (case combinator
+    "child" "&>"
+    "adjacent" "&+"
+    "sibling" "&~"
+    ""))
 
 (defn- render-selector
   [node combinator rest-nodes]
@@ -75,7 +82,7 @@
       (str/join
         ""
         (map (fn [node]
-               (condp = (node-type node)
+               (case (node-type node)
                  "pseudo" (node-value node)
                  "pseudo-element" (str "::" (node-value node))
                  (str (render-combinator combinator) (node-value node))))
