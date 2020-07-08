@@ -3,7 +3,7 @@
             postcss-media-query-parser))
 
 (defn node->clj
-  [node]
+  [^js node]
   (cond-> {:type (keyword (.-type node))}
     (.-value node) (assoc :value (.-value node))
     (.-selectors node) (assoc :selectors

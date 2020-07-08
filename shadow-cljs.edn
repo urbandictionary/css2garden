@@ -1,5 +1,8 @@
 ;; shadow-cljs configuration
-{:builds {:repl {:target :node}
+{:builds {:app {:main css2garden.core/main
+                :output-to "dist/css2garden.js"
+                :target :node-script}
+          :repl {:target :node}
           :test {:autorun true :ns-regexp "-test$" :output-to "out/node-tests.js" :target :node-test}}
  :dependencies [[garden "1.3.9"]]
  :source-paths ["src" "test"]}

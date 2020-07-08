@@ -26,5 +26,5 @@
             (if (or (= "function" (goog/typeOf v)) (= "parent" key))
               result
               (assoc result (keyword key) (obj->clj v)))))
-        (reduce {} (.getKeys goog/object obj)))
+        (reduce {} (.getKeys ^js goog/object obj)))
     obj))

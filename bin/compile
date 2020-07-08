@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+set -eufx -o pipefail
+
+rlwrap yarn exec shadow-cljs release app
