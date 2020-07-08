@@ -59,114 +59,113 @@
         :type :root}
        (ast->clj (parse "body { background-image: url(http://image.jpg) }")))))
 
-; (deftest ast->garden-test
-;   (is (= [[[:body {:font-size "12px"}]]]
-;          (-> "body {font-size: 12px}"
-;              parse
-;              ast->clj
-;              ast->garden)))
-;   (is (= [[[:body {:font-size "12px", :font-weight "bold"}]]]
-;          (-> "body {font-size: 12px; font-weight: bold}"
-;              parse
-;              ast->clj
-;              ast->garden)))
-;   (is (= [[[:body {:font-size "12px", :font-weight "bold"}]
-;            [:h1 {:font-size "12px", :font-weight "bold"}]
-;            [:h2 {:font-size "12px", :font-weight "bold"}]]]
-;          (-> "body, h1, h2 {font-size: 12px; font-weight: bold}"
-;              parse
-;              ast->clj
-;              ast->garden)))
-;   (is
-;     (=
-;       [(list 'at-media
-;              {:max-height "300px", :screen false}
-;              [[:h1 {:font-size "12px"}] [:h2 {:font-weight "bold"}]])
-;        [[:h3 {:font-style "italic"}]]]
-;       (->
-;         "
-;           @media not screen and (max-height: 300px) {
-;             h1 {
-;               font-size: 12px;
-;             }
-;             h2 {
-;               font-weight: bold;
-;             }
-;           }
-;           h3 {
-;             font-style: italic;
-;           }
-;         "
-;         parse
-;         ast->clj
-;         ast->garden)))
-;   (is (= [[[:h1 {:color "#f00"}] [:div {:color "#f00"}]]]
-;          (-> "h1, div { color: #f00; }"
-;              parse
-;              ast->clj
-;              ast->garden)))
-;   (is (= [[[:.container [:.text {:color "#f00"}]]]]
-;          (-> ".container .text { color: #f00; }"
-;              parse
-;              ast->clj
-;              ast->garden)))
-;   (is (= [[[:#container [:#text {:color "#f00"}]]]]
-;          (-> "#container #text { color: #f00; }"
-;              parse
-;              ast->clj
-;              ast->garden)))
-;   (is (= [[[:h1 [:&>span {:color "#f00"}]]]]
-;          (-> "h1 > span { color: #f00; }"
-;              parse
-;              ast->clj
-;              ast->garden)))
-;   (is (= [[[:h1 [:&+span {:color "#f00"}]]]]
-;          (-> "h1 + span { color: #f00; }"
-;              parse
-;              ast->clj
-;              ast->garden)))
-;   (is (= [[[:h1 [(keyword "&~span") {:color "#f00"}]]]]
-;          (-> "h1 ~ span { color: #f00; }"
-;              parse
-;              ast->clj
-;              ast->garden)))
-;   (is (= [[[:#block [:a [:&+b [:&>span [:.highlight {:color "#f00"}]]]]]]]
-;          (-> "#block a + b > span .highlight { color: #f00; }"
-;              parse
-;              ast->clj
-;              ast->garden)))
-;   (is (= [[[:div:focus [:a:active [(keyword "i::after") {:color "#f00"}]]]]]
-;          (-> "div:focus a:active i::after { color: #f00; }"
-;              parse
-;              ast->clj
-;              ast->garden)))
-;   (is
-;     (=
-;       [[["a[a=\"a\"]"
-;          ["b[b^=\"b\"]"
-;           ["c[c~=\"c\"]"
-;            ["d[d|=\"d\"]" ["d[d$=\"d\"]" ["e[e*=\"e\"]" {:color
-;            "#f00"}]]]]]]]]
-;       (->
-;         "a[a=\"a\"] b[b^=\"b\"] c[c~=\"c\"] d[d|=\"d\"] d[d$=\"d\"]
-;         e[e*=\"e\"] { color: #f00; }"
-;         parse
-;         ast->clj
-;         ast->garden)))
-;   (is (= [[[:h1 [:strong {:color "#f00"}]] [:h1 [:b {:color "#f00"}]]
-;            [:h2 [:strong {:color "#f00"}]] [:h2 [:b {:color "#f00"}]]]]
-;          (-> "h1 strong, h1 b, h2 strong, h2 b { color: #f00; }"
-;              parse
-;              ast->clj
-;              ast->garden)))
-;   (is
-;     (=
-;       [[["a[attr=\"test\"]:hover::after"
-;          ["b[attr=\"ud\"]:focus::before"
-;           [(keyword "c:active::after") {:color "#f00"}]]]]]
-;       (->
-;         "a[attr=\"test\"]:hover::after b[attr=\"ud\"]:focus::before
-;         c:active::after { color: #f00; }"
-;         parse
-;         ast->clj
-;         ast->garden))))
+(deftest ast->garden-test
+  (is (= [[[:body {:font-size "12px"}]]]
+         (-> "body {font-size: 12px}"
+             parse
+             ast->clj
+             ast->garden)))
+  (is (= [[[:body {:font-size "12px", :font-weight "bold"}]]]
+         (-> "body {font-size: 12px; font-weight: bold}"
+             parse
+             ast->clj
+             ast->garden)))
+  (is (= [[[:body {:font-size "12px", :font-weight "bold"}]
+           [:h1 {:font-size "12px", :font-weight "bold"}]
+           [:h2 {:font-size "12px", :font-weight "bold"}]]]
+         (-> "body, h1, h2 {font-size: 12px; font-weight: bold}"
+             parse
+             ast->clj
+             ast->garden)))
+  (is
+    (=
+      [(list 'at-media
+             {:max-height "300px", :screen false}
+             [[:h1 {:font-size "12px"}] [:h2 {:font-weight "bold"}]])
+       [[:h3 {:font-style "italic"}]]]
+      (->
+        "
+          @media not screen and (max-height: 300px) {
+            h1 {
+              font-size: 12px;
+            }
+            h2 {
+              font-weight: bold;
+            }
+          }
+          h3 {
+            font-style: italic;
+          }
+        "
+        parse
+        ast->clj
+        ast->garden)))
+  (is (= [[[:h1 {:color "#f00"}] [:div {:color "#f00"}]]]
+         (-> "h1, div { color: #f00; }"
+             parse
+             ast->clj
+             ast->garden)))
+  (is (= [[[:.container [:.text {:color "#f00"}]]]]
+         (-> ".container .text { color: #f00; }"
+             parse
+             ast->clj
+             ast->garden)))
+  (is (= [[[:#container [:#text {:color "#f00"}]]]]
+         (-> "#container #text { color: #f00; }"
+             parse
+             ast->clj
+             ast->garden)))
+  (is (= [[[:h1 [:&>span {:color "#f00"}]]]]
+         (-> "h1 > span { color: #f00; }"
+             parse
+             ast->clj
+             ast->garden)))
+  (is (= [[[:h1 [:&+span {:color "#f00"}]]]]
+         (-> "h1 + span { color: #f00; }"
+             parse
+             ast->clj
+             ast->garden)))
+  (is (= [[[:h1 [(keyword "&~span") {:color "#f00"}]]]]
+         (-> "h1 ~ span { color: #f00; }"
+             parse
+             ast->clj
+             ast->garden)))
+  (is (= [[[:#block [:a [:&+b [:&>span [:.highlight {:color "#f00"}]]]]]]]
+         (-> "#block a + b > span .highlight { color: #f00; }"
+             parse
+             ast->clj
+             ast->garden)))
+  (is (= [[[:div:focus [:a:active [(keyword "i::after") {:color "#f00"}]]]]]
+         (-> "div:focus a:active i::after { color: #f00; }"
+             parse
+             ast->clj
+             ast->garden)))
+  (is
+    (=
+      [[["a[a=\"a\"]"
+         ["b[b^=\"b\"]"
+          ["c[c~=\"c\"]"
+           ["d[d|=\"d\"]" ["d[d$=\"d\"]" ["e[e*=\"e\"]" {:color "#f00"}]]]]]]]]
+      (->
+        "a[a=\"a\"] b[b^=\"b\"] c[c~=\"c\"] d[d|=\"d\"] d[d$=\"d\"]
+        e[e*=\"e\"] { color: #f00; }"
+        parse
+        ast->clj
+        ast->garden)))
+  (is (= [[[:h1 [:strong {:color "#f00"}]] [:h1 [:b {:color "#f00"}]]
+           [:h2 [:strong {:color "#f00"}]] [:h2 [:b {:color "#f00"}]]]]
+         (-> "h1 strong, h1 b, h2 strong, h2 b { color: #f00; }"
+             parse
+             ast->clj
+             ast->garden)))
+  (is
+    (=
+      [[["a[attr=\"test\"]:hover::after"
+         ["b[attr=\"ud\"]:focus::before"
+          [(keyword "c:active::after") {:color "#f00"}]]]]]
+      (->
+        "a[attr=\"test\"]:hover::after b[attr=\"ud\"]:focus::before
+        c:active::after { color: #f00; }"
+        parse
+        ast->clj
+        ast->garden))))
