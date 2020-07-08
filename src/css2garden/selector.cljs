@@ -93,6 +93,6 @@
   (let [selectors (js->clj (.parse css-what selector) :keywordize-keys true)]
     (if (empty? selectors)
       [selector garden-prop]
-      (map #(build-garden-selector (u/partition-by-leader % is-combinator?)
-                                   garden-prop)
-        selectors))))
+      (vec (map #(build-garden-selector (u/partition-by-leader % is-combinator?)
+                                        garden-prop)
+             selectors)))))
