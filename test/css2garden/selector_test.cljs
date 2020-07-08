@@ -44,6 +44,8 @@
                   (ast->garden "#block a + b > span .highlight"
                                {:color "red"}))))
   (testing "pseudo-classes"
+           (is (= [[(keyword ":active") {:color "red"}]]
+                  (ast->garden ":active" {:color "red"})))
            (is (= [[:a:active {:color "red"}]]
                   (ast->garden "a:active" {:color "red"})))
            (is (= [[:body [:#container [:a:active {:color "red"}]]]]
@@ -117,7 +119,7 @@
                   (ast->garden "li:nth-child(2n+3)" {:color "#f00"})))
            (is (= [[(keyword "a:not(.internal)") {:color "#f00"}]]
                   (ast->garden "a:not(.internal)" {:color "#f00"})))
-           ;  (is (= [] (ast->garden ":not(.important.dialog)" {:color
-           ;  "#f00"})))
+           (is (= [[(keyword ":not(.important.dialog)") {:color "#f00"}]]
+                  (ast->garden ":not(.important.dialog)" {:color "#f00"})))
            (is (= [[(keyword "p:lang(it)") {:color "#f00"}]]
                   (ast->garden "p:lang(it)" {:color "#f00"})))))

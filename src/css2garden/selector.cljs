@@ -1,5 +1,6 @@
 (ns css2garden.selector
   (:require [css2garden.object :refer [obj->clj]]
+            [css2garden.util :as u]
             [css-what :as css-what]
             [clojure.string :as str]))
 
@@ -10,6 +11,8 @@
    "start" "^=",
    "end" "$=",
    "any" "*="})
+
+(def combinator-nodes #{"adjacent" "child" "descendant" "sibling"})
 
 (defn selector->ast
   [input]
@@ -57,51 +60,42 @@
           (str \: (:name node) \( (render-pseudo-data-value node) \))
         :else (str \: (:name node))))
 
-(defn- node-value
-  [node]
-  (case (:type node)
-    "attribute" (attribute-value node)
-    "pseudo" (pseudo-value node)
-    (:name node)))
-
 (defn- render-combinator
-  [combinator]
-  (case combinator
+  [node]
+  (case (node-type node)
     "child" "&>"
     "adjacent" "&+"
     "sibling" "&~"
     ""))
 
+(defn- node-value
+  [node]
+  (cond (= "attribute" (:type node)) (attribute-value node)
+        (= "pseudo" (:type node)) (pseudo-value node)
+        (= "pseudo-element" (:type node)) (str "::" (:name node))
+        (combinator-nodes (node-type node)) (render-combinator node)
+        :else (:name node)))
+
+(defn- is-combinator? [node] (combinator-nodes (node-type node)))
+
+(defn- is-attribute? [node] (= "attribute" (node-type node)))
+
 (defn- render-selector
-  [node combinator rest-nodes]
-  (let [postfixes (take-while #(#{"attribute" "pseudo" "pseudo-element"}
-                                 (node-type %))
-                              rest-nodes)
-        keywordize? (empty? (filter #(= "attribute" (node-type %)) postfixes))]
-    ((if keywordize? keyword identity)
-      (str/join
-        ""
-        (map (fn [node]
-               (case (node-type node)
-                 "pseudo" (node-value node)
-                 "pseudo-element" (str "::" (node-value node))
-                 (str (render-combinator combinator) (node-value node))))
-          (cons node postfixes))))))
+  [nodes]
+  (let [keywordize? (empty? (filter is-attribute? nodes))]
+    ((if keywordize? keyword str) (str/join "" (map node-value nodes)))))
 
 (defn- build-garden-selector
-  [[node & nodes] combinator garden-prop]
-  (if (nil? node)
+  [[nodes & rest-nodes] garden-prop]
+  (if (empty? nodes)
     garden-prop
-    (condp contains? (node-type node)
-      #{"adjacent" "child" "sibling"}
-        (build-garden-selector nodes (node-type node) garden-prop)
-      #{"tag" "class" "id"} [(render-selector node combinator nodes)
-                             (build-garden-selector nodes "" garden-prop)]
-      (build-garden-selector nodes "" garden-prop))))
+    [(render-selector nodes) (build-garden-selector rest-nodes garden-prop)]))
 
 (defn ast->garden
   [selector garden-prop]
   (let [selectors (js->clj (.parse css-what selector) :keywordize-keys true)]
     (if (empty? selectors)
       [selector garden-prop]
-      (map #(build-garden-selector % "" garden-prop) selectors))))
+      (map #(build-garden-selector (u/partition-by-leader % is-combinator?)
+                                   garden-prop)
+        selectors))))
