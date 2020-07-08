@@ -12,6 +12,12 @@
          ":not(.important.dialog)" "p:lang(it)")
 
 (deftest ast->garden-test
+  (testing "star selector"
+           (is (= [[:* {:font-weight "bold"}]]
+                  (ast->garden "*" {:font-weight "bold"}))))
+  (testing "combined star selector"
+           (is (= [[:* [:* {:font-weight "bold"}]]]
+                  (ast->garden "* *" {:font-weight "bold"}))))
   (testing "tag selector"
            (is (= [[:h1 {:font-weight "bold"}]]
                   (ast->garden "h1" {:font-weight "bold"}))))
@@ -46,6 +52,8 @@
   (testing "pseudo-classes"
            (is (= [[(keyword ":active") {:color "red"}]]
                   (ast->garden ":active" {:color "red"})))
+           (is (= [[:*:active {:color "red"}]]
+                  (ast->garden "*:active" {:color "red"})))
            (is (= [[:a:active {:color "red"}]]
                   (ast->garden "a:active" {:color "red"})))
            (is (= [[:body [:#container [:a:active {:color "red"}]]]]
@@ -57,6 +65,8 @@
   (testing "pseudo-elements"
            (is (= [[(keyword "a::after") {:color "red"}]]
                   (ast->garden "a::after" {:color "red"})))
+           (is (= [[(keyword "*::after") {:color "red"}]]
+                  (ast->garden "*::after" {:color "red"})))
            (is (= [[:a:after {:color "red"}]]
                   (ast->garden "a:after" {:color "red"})))
            (is (= [[(keyword "a::first-line") {:color "red"}]]
@@ -64,6 +74,8 @@
            (is (= [[(keyword "a::-moz-selection") {:color "red"}]]
                   (ast->garden "a::-moz-selection" {:color "red"}))))
   (testing "attribute selectors"
+           (is (= [["*[a=\"b\"]" {:color "red"}]]
+                  (ast->garden "*[a=\"b\"]" {:color "red"})))
            (is (= [[:form ["input[type=\"text\"]" {:color "red"}]]]
                   (ast->garden "form input[type=\"text\"]" {:color "red"})))
            (is (= [["a[src~=\"https\"]" {:color "red"}]]

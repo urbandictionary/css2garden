@@ -73,6 +73,7 @@
   (cond (= "attribute" (:type node)) (attribute-value node)
         (= "pseudo" (:type node)) (pseudo-value node)
         (= "pseudo-element" (:type node)) (str "::" (:name node))
+        (= "universal" (:type node)) "*"
         (combinator-nodes (node-type node)) (render-combinator node)
         :else (:name node)))
 
