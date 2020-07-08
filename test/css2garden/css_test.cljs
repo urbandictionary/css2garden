@@ -147,7 +147,8 @@
           ["c[c~=\"c\"]"
            ["d[d|=\"d\"]" ["d[d$=\"d\"]" ["e[e*=\"e\"]" {:color "#f00"}]]]]]]]]
       (->
-        "a[a=\"a\"] b[b^=\"b\"] c[c~=\"c\"] d[d|=\"d\"] d[d$=\"d\"] e[e*=\"e\"] { color: #f00; }"
+        "a[a=\"a\"] b[b^=\"b\"] c[c~=\"c\"] d[d|=\"d\"] d[d$=\"d\"]
+        e[e*=\"e\"] { color: #f00; }"
         parse
         ast->clj
         ast->garden)))
@@ -163,7 +164,8 @@
          ["b[attr=\"ud\"]:focus::before"
           [(keyword "c:active::after") {:color "#f00"}]]]]]
       (->
-        "a[attr=\"test\"]:hover::after b[attr=\"ud\"]:focus::before c:active::after { color: #f00; }"
+        "a[attr=\"test\"]:hover::after b[attr=\"ud\"]:focus::before
+        c:active::after { color: #f00; }"
         parse
         ast->clj
         ast->garden))))

@@ -3,20 +3,7 @@
             [clojure.test :refer [deftest is are testing]]))
 
 (deftest selector->ast-test
-  (is (= {:source {:start {:line 1, :column 1}, :end {:line 1, :column 2}},
-          :spaces {:before "", :after ""},
-          :nodes {:0 {:source {:start {:line 1, :column 1},
-                               :end {:line 1, :column 2}},
-                      :spaces {:before "", :after ""},
-                      :nodes {:0 {:value "h1",
-                                  :source {:start {:line 1, :column 1},
-                                           :end {:line 1, :column 2}},
-                                  :sourceIndex 0,
-                                  :spaces {:before "", :after ""},
-                                  :type "tag"}},
-                      :type "selector"}},
-          :type "root"}
-         (selector->ast "h1"))))
+  (is (= [[{:type "tag", :name "h1"}]] (selector->ast "h1"))))
 
 (comment "test cases for future tests"
          "a[b]:c d>e,f[x=y],g" "body h1"
@@ -105,7 +92,8 @@
           ["b[attr=\"ud\"]:focus::before"
            [(keyword "c:active::after") {:color "#f00"}]]]]
         (ast->garden
-          "a[attr=\"test\"]:hover::after b[attr=\"ud\"]:focus::before c:active::after"
+          "a[attr=\"test\"]:hover::after b[attr=\"ud\"]:focus::before
+          c:active::after"
           {:color "#f00"}))))
   (testing
     "multiple selectors"
@@ -121,18 +109,15 @@
           [:h2 [:b {:font-weight "bold"}]]]
          (ast->garden "h1 strong, h1 b, h2 strong, h2 b"
                       {:font-weight "bold"})))
-    (is (= [["a[b]:c" [:d [:&>e {:color "#f00"}]]] ["f[x=y]" {:color "#f00"}]
-            [:g {:color "#f00"}]]
+    (is (= [["a[b]:c" [:d [:&>e {:color "#f00"}]]]
+            ["f[x=\"y\"]" {:color "#f00"}] [:g {:color "#f00"}]]
            (ast->garden "a[b]:c d>e,f[x=y],g" {:color "#f00"}))))
-  (testing
-    "unsupported cases"
-    (is (= [[(keyword "li:nth-child(2n+3)") {:color "#f00"}]
-            [:2n [:&+3 {:color "#f00"}]]]
-           (ast->garden "li:nth-child(2n+3)" {:color "#f00"})))
-    (is (= [[(keyword "a:not(.internal)") {:color "#f00"}]
-            [:.internal {:color "#f00"}]]
-           (ast->garden "a:not(.internal)" {:color "#f00"})))
-    (is (= [{:color "#f00"} [:.important [:.dialog {:color "#f00"}]]]
-           (ast->garden ":not(.important.dialog)" {:color "#f00"})))
-    (is (= [[(keyword "p:lang(it)") {:color "#f00"}] [:it {:color "#f00"}]]
-           (ast->garden "p:lang(it)" {:color "#f00"})))))
+  (testing "unsupported cases"
+           (is (= [[(keyword "li:nth-child(2n+3)") {:color "#f00"}]]
+                  (ast->garden "li:nth-child(2n+3)" {:color "#f00"})))
+           (is (= [[(keyword "a:not(.internal)") {:color "#f00"}]]
+                  (ast->garden "a:not(.internal)" {:color "#f00"})))
+           ;  (is (= [] (ast->garden ":not(.important.dialog)" {:color
+           ;  "#f00"})))
+           (is (= [[(keyword "p:lang(it)") {:color "#f00"}]]
+                  (ast->garden "p:lang(it)" {:color "#f00"})))))
