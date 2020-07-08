@@ -1,6 +1,5 @@
 (ns css2garden.selector
-  (:require postcss-selector-parser
-            [css2garden.object :refer [obj->clj]]
+  (:require [css2garden.object :refer [obj->clj]]
             [css-what :as css-what]
             [clojure.string :as str]))
 
