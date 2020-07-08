@@ -14,10 +14,6 @@
 
 (def combinator-nodes #{"adjacent" "child" "descendant" "sibling"})
 
-(defn selector->ast
-  [input]
-  (js->clj (.parse css-what input) :keywordize-keys true))
-
 (defn- attribute-type
   [node]
   (case (:name node)

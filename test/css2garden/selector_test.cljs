@@ -1,15 +1,6 @@
 (ns css2garden.selector-test
-  (:require [css2garden.selector :refer [ast->garden selector->ast]]
+  (:require [css2garden.selector :refer [ast->garden]]
             [clojure.test :refer [deftest is are testing]]))
-
-(deftest selector->ast-test
-  (is (= [[{:type "tag", :name "h1"}]] (selector->ast "h1"))))
-
-(comment "test cases for future tests"
-         "a[b]:c d>e,f[x=y],g" "body h1"
-         "::-moz-selection" ".alpha:first-letter, .bravo:first-line"
-         "li:nth-child(2n+3)" "a:not(.internal)"
-         ":not(.important.dialog)" "p:lang(it)")
 
 (deftest ast->garden-test
   (testing "star selector"
