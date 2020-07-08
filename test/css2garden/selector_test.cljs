@@ -74,6 +74,8 @@
            (is (= [[(keyword "a::-moz-selection") {:color "red"}]]
                   (ast->garden "a::-moz-selection" {:color "red"}))))
   (testing "attribute selectors"
+           (is (= [["[a=\"b\"]" {:color "red"}]]
+                  (ast->garden "[a=\"b\"]" {:color "red"})))
            (is (= [["*[a=\"b\"]" {:color "red"}]]
                   (ast->garden "*[a=\"b\"]" {:color "red"})))
            (is (= [["*[a=\"b\"]" {:color "red"}]]
@@ -110,7 +112,9 @@
         (ast->garden
           "a[attr=\"test\"]:hover::after b[attr=\"ud\"]:focus::before
           c:active::after"
-          {:color "#f00"}))))
+          {:color "#f00"})))
+    (is (= [["[attr=\"test\"]:hover::after" {:color "#f00"}]]
+           (ast->garden "[attr=\"test\"]:hover::after" {:color "#f00"}))))
   (testing
     "multiple selectors"
     (is (= [[:h1 {:font-weight "bold"}] [:h2 {:font-weight "bold"}]]
