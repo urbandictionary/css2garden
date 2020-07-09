@@ -125,11 +125,11 @@
             ["f[x=\"y\"]" {:color "#f00"}] [:g {:color "#f00"}]]
            (ast->garden "a[b]:c d>e,f[x=y],g" {:color "#f00"}))))
   (testing "pseudo-classes with params"
-           (is (= [[(keyword "li:nth-child(2n+3)") {:color "#f00"}]]
+           (is (= [["li:nth-child(2n+3)" {:color "#f00"}]]
                   (ast->garden "li:nth-child(2n+3)" {:color "#f00"})))
-           (is (= [[(keyword "a:not(.internal)") {:color "#f00"}]]
+           (is (= [["a:not(.internal)" {:color "#f00"}]]
                   (ast->garden "a:not(.internal)" {:color "#f00"})))
-           (is (= [[(keyword ":not(.important.dialog)") {:color "#f00"}]]
+           (is (= [[":not(.important.dialog)" {:color "#f00"}]]
                   (ast->garden ":not(.important.dialog)" {:color "#f00"})))
-           (is (= [[(keyword "p:lang(it)") {:color "#f00"}]]
+           (is (= [["p:lang(it)" {:color "#f00"}]]
                   (ast->garden "p:lang(it)" {:color "#f00"})))))

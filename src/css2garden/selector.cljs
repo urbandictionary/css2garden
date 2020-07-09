@@ -77,6 +77,10 @@
 
 (defn- is-attribute? [node] (= "attribute" (node-type node)))
 
+(defn- is-pseudo-with-params?
+  [node]
+  (and (= "pseudo" (:type node)) (some? (:data node))))
+
 (defn- use-sibling-combinator?
   [nodes]
   (= "sibling"
@@ -87,7 +91,9 @@
 (defn- render-selector
   [nodes]
   (let [stringify? (or (use-sibling-combinator? nodes)
-                       (not (empty? (filter is-attribute? nodes))))]
+                       (not (empty? (filter (some-fn is-attribute?
+                                                     is-pseudo-with-params?)
+                                      nodes))))]
     ((if stringify? str keyword) (str/join "" (map node-value nodes)))))
 
 (defn- build-garden-selector
