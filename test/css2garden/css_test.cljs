@@ -125,7 +125,7 @@
              parse
              ast->clj
              ast->garden)))
-  (is (= [[[:h1 [(keyword "&~span") {:color "#f00"}]]]]
+  (is (= [[[:h1 ["~span" {:color "#f00"}]]]]
          (-> "h1 ~ span { color: #f00; }"
              parse
              ast->clj

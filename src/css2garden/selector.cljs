@@ -61,7 +61,7 @@
   (case (node-type node)
     "child" "&>"
     "adjacent" "&+"
-    "sibling" "&~"
+    "sibling" "~"
     ""))
 
 (defn- node-value
@@ -77,10 +77,18 @@
 
 (defn- is-attribute? [node] (= "attribute" (node-type node)))
 
+(defn- use-sibling-combinator?
+  [nodes]
+  (= "sibling"
+     (-> nodes
+         first
+         node-type)))
+
 (defn- render-selector
   [nodes]
-  (let [keywordize? (empty? (filter is-attribute? nodes))]
-    ((if keywordize? keyword str) (str/join "" (map node-value nodes)))))
+  (let [stringify? (or (use-sibling-combinator? nodes)
+                       (not (empty? (filter is-attribute? nodes))))]
+    ((if stringify? str keyword) (str/join "" (map node-value nodes)))))
 
 (defn- build-garden-selector
   [[nodes & rest-nodes] garden-prop]

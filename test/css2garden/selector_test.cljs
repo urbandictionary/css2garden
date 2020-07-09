@@ -1,6 +1,7 @@
 (ns css2garden.selector-test
   (:require [css2garden.selector :refer [ast->garden]]
-            [clojure.test :refer [deftest is are testing]]))
+            [clojure.test :refer [deftest is are testing]]
+            [garden.selectors :as s]))
 
 (deftest ast->garden-test
   (testing "star selector"
@@ -34,7 +35,7 @@
            (is (= [[:h1 [:&+span {:color "#fae"}]]]
                   (ast->garden "h1 + span" {:color "#fae"}))))
   (testing "sibling combinator"
-           (is (= [[:h1 [(keyword "&~span") {:color "#fae"}]]]
+           (is (= [[:h1 ["~span" {:color "#fae"}]]]
                   (ast->garden "h1 ~ span" {:color "#fae"}))))
   (testing "mixed selector"
            (is (= [[:#block [:a [:&+b [:&>span [:.highlight {:color "red"}]]]]]]
