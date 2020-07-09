@@ -124,7 +124,7 @@
     (is (= [["a[b]:c" [:d [:&>e {:color "#f00"}]]]
             ["f[x=\"y\"]" {:color "#f00"}] [:g {:color "#f00"}]]
            (ast->garden "a[b]:c d>e,f[x=y],g" {:color "#f00"}))))
-  (testing "unsupported cases"
+  (testing "pseudo-classes with params"
            (is (= [[(keyword "li:nth-child(2n+3)") {:color "#f00"}]]
                   (ast->garden "li:nth-child(2n+3)" {:color "#f00"})))
            (is (= [[(keyword "a:not(.internal)") {:color "#f00"}]]
