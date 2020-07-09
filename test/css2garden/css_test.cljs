@@ -188,4 +188,24 @@
          (-> "*{ color: #f00; }"
              parse
              ast->clj
+             ast->garden)))
+  (is (= [[["li:nth-child(2n+3)" {:color "#f00"}]]]
+         (-> "li:nth-child(2n+3) { color: #f00; }"
+             parse
+             ast->clj
+             ast->garden)))
+  (is (= [[["a:not(.internal)" {:color "#f00"}]]]
+         (-> "a:not(.internal) { color: #f00; }"
+             parse
+             ast->clj
+             ast->garden)))
+  (is (= [[[":not(.important.dialog)" {:color "#f00"}]]]
+         (-> ":not(.important.dialog) { color: #f00; }"
+             parse
+             ast->clj
+             ast->garden)))
+  (is (= [[["p:lang(it)" {:color "#f00"}]]]
+         (-> "p:lang(it) { color: #f00; }"
+             parse
+             ast->clj
              ast->garden))))
