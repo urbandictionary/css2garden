@@ -65,37 +65,50 @@
                   (ast->garden "a::first-line" {:color "red"})))
            (is (= [[(keyword "a::-moz-selection") {:color "red"}]]
                   (ast->garden "a::-moz-selection" {:color "red"}))))
-  (testing "attribute selectors"
-           (is (= [["[a=\"b\"]" {:color "red"}]]
-                  (ast->garden "[a=\"b\"]" {:color "red"})))
-           (is (= [["[id]" {:color "red"}]]
-                  (ast->garden "[id]" {:color "red"})))
-           (is (= [[:#test {:color "red"}]]
-                  (ast->garden "[id=\"test\"]" {:color "red"})))
-           (is (= [[:a#test {:color "red"}]]
-                  (ast->garden "a[id=\"test\"]" {:color "red"})))
-           (is (= [["[id$=\"test\"]" {:color "red"}]]
-                  (ast->garden "[id$=\"test\"]" {:color "red"})))
-           (is (= [["[id|=\"test\"]" {:color "red"}]]
-                  (ast->garden "[id|=\"test\"]" {:color "red"})))
-           (is (= [["[id^=\"test\"]" {:color "red"}]]
-                  (ast->garden "[id^=\"test\"]" {:color "red"})))
-           (is (= [["[id*=\"test\"]" {:color "red"}]]
-                  (ast->garden "[id*=\"test\"]" {:color "red"})))
-           (is (= [["*[a=\"b\"]" {:color "red"}]]
-                  (ast->garden "*[a=\"b\"]" {:color "red"})))
-           (is (= [[:form ["input[type=\"text\"]" {:color "red"}]]]
-                  (ast->garden "form input[type=\"text\"]" {:color "red"})))
-           (is (= [["a[src~=\"https\"]" {:color "red"}]]
-                  (ast->garden "a[src~=\"https\"]" {:color "red"})))
-           (is (= [["a[src|=\"https\"]" {:color "red"}]]
-                  (ast->garden "a[src|=\"https\"]" {:color "red"})))
-           (is (= [["a[src^=\"https\"]" {:color "red"}]]
-                  (ast->garden "a[src^=\"https\"]" {:color "red"})))
-           (is (= [["a[src$=\"https\"]" {:color "red"}]]
-                  (ast->garden "a[src$=\"https\"]" {:color "red"})))
-           (is (= [["a[src*=\"https\"]" {:color "red"}]]
-                  (ast->garden "a[src*=\"https\"]" {:color "red"}))))
+  (testing
+    "attribute selectors"
+    (is (= [["[a=\"b\"]" {:color "red"}]]
+           (ast->garden "[a=\"b\"]" {:color "red"})))
+    (is (= [["[id]" {:color "red"}]] (ast->garden "[id]" {:color "red"})))
+    (is (= [[:#test {:color "red"}]]
+           (ast->garden "[id=\"test\"]" {:color "red"})))
+    (is (= [[:a#test {:color "red"}]]
+           (ast->garden "a[id=\"test\"]" {:color "red"})))
+    (is (= [["[id$=\"test\"]" {:color "red"}]]
+           (ast->garden "[id$=\"test\"]" {:color "red"})))
+    (is (= [["[id|=\"test\"]" {:color "red"}]]
+           (ast->garden "[id|=\"test\"]" {:color "red"})))
+    (is (= [["[id^=\"test\"]" {:color "red"}]]
+           (ast->garden "[id^=\"test\"]" {:color "red"})))
+    (is (= [["[id*=\"test\"]" {:color "red"}]]
+           (ast->garden "[id*=\"test\"]" {:color "red"})))
+    (is (= [["[class]" {:color "red"}]] (ast->garden "[class]" {:color "red"})))
+    (is (= [[:.test {:color "red"}]]
+           (ast->garden "[class=\"test\"]" {:color "red"})))
+    (is (= [[:a.test {:color "red"}]]
+           (ast->garden "a[class=\"test\"]" {:color "red"})))
+    (is (= [["[class$=\"test\"]" {:color "red"}]]
+           (ast->garden "[class$=\"test\"]" {:color "red"})))
+    (is (= [["[class|=\"test\"]" {:color "red"}]]
+           (ast->garden "[class|=\"test\"]" {:color "red"})))
+    (is (= [["[class^=\"test\"]" {:color "red"}]]
+           (ast->garden "[class^=\"test\"]" {:color "red"})))
+    (is (= [["[class*=\"test\"]" {:color "red"}]]
+           (ast->garden "[class*=\"test\"]" {:color "red"})))
+    (is (= [["*[a=\"b\"]" {:color "red"}]]
+           (ast->garden "*[a=\"b\"]" {:color "red"})))
+    (is (= [[:form ["input[type=\"text\"]" {:color "red"}]]]
+           (ast->garden "form input[type=\"text\"]" {:color "red"})))
+    (is (= [["a[src~=\"https\"]" {:color "red"}]]
+           (ast->garden "a[src~=\"https\"]" {:color "red"})))
+    (is (= [["a[src|=\"https\"]" {:color "red"}]]
+           (ast->garden "a[src|=\"https\"]" {:color "red"})))
+    (is (= [["a[src^=\"https\"]" {:color "red"}]]
+           (ast->garden "a[src^=\"https\"]" {:color "red"})))
+    (is (= [["a[src$=\"https\"]" {:color "red"}]]
+           (ast->garden "a[src$=\"https\"]" {:color "red"})))
+    (is (= [["a[src*=\"https\"]" {:color "red"}]]
+           (ast->garden "a[src*=\"https\"]" {:color "red"}))))
   (testing
     "mixed pseudo-classes, elements, attributes"
     (is (= [[:a:active:hover {:color "#f00"}]]

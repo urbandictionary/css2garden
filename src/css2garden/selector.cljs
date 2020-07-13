@@ -43,6 +43,7 @@
   (case ((juxt :name :action) node)
     ["id" "equals"] (str \# (:value node))
     ["class" "element"] (str \. (:value node))
+    ["class" "equals"] (str \. (:value node))
     (render-attribute-value node)))
 
 (defn- render-pseudo-data-value
@@ -85,6 +86,12 @@
   [node]
   (and (= "id" (:name node)) (not= "equals" (:action node))))
 
+(defn- is-class-attribute?
+  [node]
+  (and (= "class" (:name node))
+       (not= "equals" (:action node))
+       (not= "element" (:action node))))
+
 (defn- use-sibling-combinator?
   [nodes]
   (= "sibling"
@@ -105,7 +112,8 @@
                        (is-single-pseudo? nodes)
                        (not (empty? (filter (some-fn is-attribute?
                                                      is-pseudo-with-params?
-                                                     is-id-attribute?)
+                                                     is-id-attribute?
+                                                     is-class-attribute?)
                                       nodes))))]
     ((if stringify? str keyword) (str/join "" (map node-value nodes)))))
 
