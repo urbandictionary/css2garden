@@ -208,4 +208,9 @@
          (-> "p:lang(it) { color: #f00; }"
              parse
              ast->clj
+             ast->garden)))
+  (is (= [[["[id]" {:color "#f00"}]]]
+         (-> "[id] { color: #f00; }"
+             parse
+             ast->clj
              ast->garden))))

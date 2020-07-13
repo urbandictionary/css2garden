@@ -40,9 +40,9 @@
 
 (defn- attribute-value
   [node]
-  (case (:name node)
-    "id" (str \# (:value node))
-    "class" (str \. (:value node))
+  (case ((juxt :name :action) node)
+    ["id" "equals"] (str \# (:value node))
+    ["class" "element"] (str \. (:value node))
     (render-attribute-value node)))
 
 (defn- render-pseudo-data-value
@@ -81,6 +81,8 @@
   [node]
   (and (= "pseudo" (:type node)) (some? (:data node))))
 
+(defn- is-id-attribute? [node] (= ["id" "exists"] ((juxt :name :action) node)))
+
 (defn- use-sibling-combinator?
   [nodes]
   (= "sibling"
@@ -92,7 +94,8 @@
   [nodes]
   (let [stringify? (or (use-sibling-combinator? nodes)
                        (not (empty? (filter (some-fn is-attribute?
-                                                     is-pseudo-with-params?)
+                                                     is-pseudo-with-params?
+                                                     is-id-attribute?)
                                       nodes))))]
     ((if stringify? str keyword) (str/join "" (map node-value nodes)))))
 

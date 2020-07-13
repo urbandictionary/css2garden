@@ -68,6 +68,8 @@
   (testing "attribute selectors"
            (is (= [["[a=\"b\"]" {:color "red"}]]
                   (ast->garden "[a=\"b\"]" {:color "red"})))
+           (is (= [["[id]" {:color "red"}]]
+                  (ast->garden "[id]" {:color "red"})))
            (is (= [["*[a=\"b\"]" {:color "red"}]]
                   (ast->garden "*[a=\"b\"]" {:color "red"})))
            (is (= [[:form ["input[type=\"text\"]" {:color "red"}]]]
