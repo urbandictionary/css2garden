@@ -2,6 +2,13 @@
 {:builds {:app {:main css2garden.core/main
                 :output-to "dist/css2garden.js"
                 :target :node-script}
+          :browser {:target :browser
+                    :output-dir "docs/js"
+                    :asset-path "/js"
+                    :modules {:main {:entries [css2garden.core]}}
+                    :devtools
+                     {:http-root "docs"
+                      :http-port 8020}}
           :repl {:target :node}
           :test {:autorun true :ns-regexp "-test$" :output-to "out/node-tests.js" :target :node-test}}
  :dependencies [[garden "1.3.9"]]

@@ -3,3 +3,4 @@
 set -eufx -o pipefail
 
 rlwrap yarn exec shadow-cljs release app
+rlwrap yarn exec shadow-cljs release browser
