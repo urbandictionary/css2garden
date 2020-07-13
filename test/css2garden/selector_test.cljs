@@ -70,8 +70,6 @@
                   (ast->garden "[a=\"b\"]" {:color "red"})))
            (is (= [["*[a=\"b\"]" {:color "red"}]]
                   (ast->garden "*[a=\"b\"]" {:color "red"})))
-           (is (= [["*[a=\"b\"]" {:color "red"}]]
-                  (ast->garden "*[a=\"b\"]" {:color "red"})))
            (is (= [[:form ["input[type=\"text\"]" {:color "red"}]]]
                   (ast->garden "form input[type=\"text\"]" {:color "red"})))
            (is (= [["a[src~=\"https\"]" {:color "red"}]]
