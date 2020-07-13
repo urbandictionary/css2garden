@@ -81,7 +81,9 @@
   [node]
   (and (= "pseudo" (:type node)) (some? (:data node))))
 
-(defn- is-id-attribute? [node] (= ["id" "exists"] ((juxt :name :action) node)))
+(defn- is-id-attribute?
+  [node]
+  (and (= "id" (:name node)) (not= "equals" (:action node))))
 
 (defn- use-sibling-combinator?
   [nodes]

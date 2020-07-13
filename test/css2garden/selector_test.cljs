@@ -70,6 +70,18 @@
                   (ast->garden "[a=\"b\"]" {:color "red"})))
            (is (= [["[id]" {:color "red"}]]
                   (ast->garden "[id]" {:color "red"})))
+           (is (= [[:#test {:color "red"}]]
+                  (ast->garden "[id=\"test\"]" {:color "red"})))
+           (is (= [[:a#test {:color "red"}]]
+                  (ast->garden "a[id=\"test\"]" {:color "red"})))
+           (is (= [["[id$=\"test\"]" {:color "red"}]]
+                  (ast->garden "[id$=\"test\"]" {:color "red"})))
+           (is (= [["[id|=\"test\"]" {:color "red"}]]
+                  (ast->garden "[id|=\"test\"]" {:color "red"})))
+           (is (= [["[id^=\"test\"]" {:color "red"}]]
+                  (ast->garden "[id^=\"test\"]" {:color "red"})))
+           (is (= [["[id*=\"test\"]" {:color "red"}]]
+                  (ast->garden "[id*=\"test\"]" {:color "red"})))
            (is (= [["*[a=\"b\"]" {:color "red"}]]
                   (ast->garden "*[a=\"b\"]" {:color "red"})))
            (is (= [[:form ["input[type=\"text\"]" {:color "red"}]]]
