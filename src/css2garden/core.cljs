@@ -4,11 +4,16 @@
             [fs :as fs]
             [postcss :refer [parse]]))
 
-(defn main
-  [& args]
-  (-> (.readFileSync fs js/process.stdin.fd "utf-8")
+(defn convert
+  [css]
+  (-> css
       parse
       ast->clj
       ast->garden
-      prn-str
+      pr-str))
+
+(defn main
+  [& args]
+  (-> (.readFileSync fs js/process.stdin.fd "utf-8")
+      convert
       println))

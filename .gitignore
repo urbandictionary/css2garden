@@ -1,6 +1,7 @@
+.DS_Store
+.shadow-cljs
+.vscode
 dist
+docs/js/cljs-runtime
 node_modules
 out
-.shadow-cljs
-.DS_Store
-.vscode
