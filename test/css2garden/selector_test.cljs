@@ -42,7 +42,7 @@
                   (ast->garden "#block a + b > span .highlight"
                                {:color "red"}))))
   (testing "pseudo-classes"
-           (is (= [[(keyword ":active") {:color "red"}]]
+           (is (= [[":active" {:color "red"}]]
                   (ast->garden ":active" {:color "red"})))
            (is (= [[:*:active {:color "red"}]]
                   (ast->garden "*:active" {:color "red"})))

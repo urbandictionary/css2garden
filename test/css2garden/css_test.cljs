@@ -174,7 +174,7 @@
         parse
         ast->clj
         ast->garden)))
-  (is (= [[[(keyword ":active") {:color "#f00"}]]]
+  (is (= [[[":active" {:color "#f00"}]]]
          (-> ":active { color: #f00; }"
              parse
              ast->clj

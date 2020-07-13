@@ -92,9 +92,17 @@
          first
          node-type)))
 
+(defn- is-single-pseudo?
+  [nodes]
+  (= "pseudo"
+     (-> nodes
+         first
+         node-type)))
+
 (defn- render-selector
   [nodes]
   (let [stringify? (or (use-sibling-combinator? nodes)
+                       (is-single-pseudo? nodes)
                        (not (empty? (filter (some-fn is-attribute?
                                                      is-pseudo-with-params?
                                                      is-id-attribute?)
