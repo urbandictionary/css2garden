@@ -1,16 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <title>CSS 2 Garden</title>
+    <title>CSS2Garden</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="/css2garden/css/css.css">
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
     <script src="/css2garden/js/main.js"></script>
 </head>
+
 <body>
-    <div class="header"></div>
-    <div class="content">
+    <nav class="navbar fixed-top navbar-light bg-light">
+        <div class="container-fluid">
+            <a href="/css2garden" class="navbar-brand">CSS2Garden</a>
+
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="github-button nav-link" href="https://github.com/urbandictionary/css2garden"
+                        data-icon="octicon-star" data-size="large" data-show-count="true"
+                        aria-label="Star urbandictionary/css2garden on GitHub">Star</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div class="content container-fluid">
         <div class="column">
             <textarea name="input" id="input" cols="30" rows="10"></textarea>
         </div>
@@ -21,4 +36,5 @@
     <div class="footer"></div>
     <script src="/css2garden/js/js.js"></script>
 </body>
+
 </html>
