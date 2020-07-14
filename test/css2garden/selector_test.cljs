@@ -73,9 +73,10 @@
         ["b[attr=\"ud\"]:focus::before" [(keyword "c:active::after") {}]]]]
     "[attr=\"test\"]:hover::after" [["[attr=\"test\"]:hover::after" {}]]
     ; mixed cases
-    "h1, h2" [[:h1 {}] [:h2 {}]]
+    "h1, h2" [:h1 :h2 {}]
+    "h1 a, h2 a" [:h1 :h2 [:a {}]]
     "h1 a, h2 b" [[:h1 [:a {}]] [:h2 [:b {}]]]
-    "h1, .bold" [[:h1 {}] [:.bold {}]]
+    "h1, .bold" [:h1 :.bold {}]
     "h1 strong, h1 b, h2 strong, h2 b" [[:h1 [:strong {}]] [:h1 [:b {}]]
                                         [:h2 [:strong {}]] [:h2 [:b {}]]]
     "a[b]:c d>e,f[x=y],g" [["a[b]:c" [:d [:&>e {}]]] ["f[x=\"y\"]" {}]

@@ -123,11 +123,19 @@
     garden-prop
     [(render-selector nodes) (build-garden-selector rest-nodes garden-prop)]))
 
+(defn merge-rules
+  [rules]
+  (if (and (> (count rules) 1) (apply = (map last rules)))
+    (conj (vec (map first rules)) (last (first rules)))
+    rules))
+
 (defn ast->garden
   [selector garden-prop]
   (let [selectors (js->clj (.parse css-what selector) :keywordize-keys true)]
     (if (empty? selectors)
       [selector garden-prop]
-      (vec (map #(build-garden-selector (u/partition-by-leader % is-combinator?)
-                                        garden-prop)
-             selectors)))))
+      (->> selectors
+           (map #(build-garden-selector (u/partition-by-leader % is-combinator?)
+                                        garden-prop))
+           merge-rules
+           vec))))

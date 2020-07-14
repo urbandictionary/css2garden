@@ -70,9 +70,7 @@
              parse
              ast->clj
              ast->garden)))
-  (is (= [[[:body {:font-size "12px", :font-weight "bold"}]
-           [:h1 {:font-size "12px", :font-weight "bold"}]
-           [:h2 {:font-size "12px", :font-weight "bold"}]]]
+  (is (= [[:body :h1 :h2 {:font-size "12px", :font-weight "bold"}]]
          (-> "body, h1, h2 {font-size: 12px; font-weight: bold}"
              parse
              ast->clj
@@ -100,8 +98,13 @@
         parse
         ast->clj
         ast->garden)))
-  (is (= [[[:h1 {:color "#f00"}] [:div {:color "#f00"}]]]
+  (is (= [[:h1 :div {:color "#f00"}]]
          (-> "h1, div { color: #f00; }"
+             parse
+             ast->clj
+             ast->garden)))
+  (is (= [[:h1 :a {:color "#f00"}] [[:h2 {:font-weight "bold"}]]]
+         (-> "h1, a { color: #f00; } h2 { font-weight: bold; }"
              parse
              ast->clj
              ast->garden)))
