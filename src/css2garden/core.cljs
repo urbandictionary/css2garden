@@ -12,7 +12,7 @@
       ast->clj
       ast->garden))
 
-(defn convert-pretty [css] (with-out-str (pp/pprint (convert css))))
+(defn ^:export convert-pretty [css] (with-out-str (pp/pprint (convert css))))
 
 (defn main
   [& args]
