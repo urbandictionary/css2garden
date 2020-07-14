@@ -1,0 +1,5 @@
+#!/bin/sh
+
+set -eufx -o pipefail
+
+yarn exec shadow-cljs server

@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+set -e
+
+target=$1
+
+usage() {
+  echo "Usage: bin/watch <app | browser | test>"
+  exit 1
+}
+
+watch() {
+  yarn exec shadow-cljs watch "$target"
+}
+
+main() {
+  case $target in
+  app) watch ;;
+  browser) watch ;;
+  test) watch ;;
+  *) usage ;;
+  esac
+}
+
+main
