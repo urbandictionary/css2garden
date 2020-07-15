@@ -40,7 +40,14 @@
 
 (defn- do-merge-rules
   [rule-a rule-b]
-  (conj (first rule-a) (last (first rule-b))))
+  (conj (if (-> rule-a
+                first
+                vector?)
+          (first rule-a)
+          rule-a)
+        (-> rule-b
+            first
+            last)))
 
 (defn- merge-rules
   [rules]

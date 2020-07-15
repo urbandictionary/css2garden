@@ -119,6 +119,24 @@
              parse
              ast->clj
              ast->garden)))
+  (is
+    (=
+      [[:h1 [:a {:color "#f00"}] [:b {:font-weight "bold"}]
+        [:c {:color "red"}]]]
+      (->
+        "h1 a { color: #f00; } h1 b { font-weight: bold; } h1 c { color: red; }"
+        parse
+        ast->clj
+        ast->garden)))
+  (is
+    (=
+      [[[:h1 [:a {:color "#f00"}]]] [[:h2 [:b {:font-weight "bold"}]]]
+       [[:h1 [:c {:color "red"}]]]]
+      (->
+        "h1 a { color: #f00; } h2 b { font-weight: bold; } h1 c { color: red; }"
+        parse
+        ast->clj
+        ast->garden)))
   (is (= [[[:.container [:.text {:color "#f00"}]]]]
          (-> ".container .text { color: #f00; }"
              parse
@@ -233,7 +251,8 @@
   (is (= [:a] (path [[:a {}]])))
   (is (= [:a :b] (path [[:a [:b {}]]])))
   (is (= [:a :b :c] (path [[:a [:b [:c {}]]]])))
-  (is (= [:a :b :c :d] (path [[:a [:b [:c :d {}]]]]))))
+  (is (= [:a :b :c :d] (path [[:a [:b [:c :d {}]]]])))
+  (is (= [:a {} :b] (path [:a {} [:b {}]]))))
 
 (deftest share-prefix?-test
   (is (share-prefix? [[:a {}]] [[:a {}]]))
@@ -257,4 +276,7 @@
   (is (= [[:a {:x 1} [:b {:y 1}]]]
          (merge-rules [[[:a {:x 1}]] [[:a [:b {:y 1}]]]])))
   (is (= [[:a [:b {:x 1}] [:c {:y 1}]]]
-         (merge-rules [[[:a [:b {:x 1}]]] [[:a [:c {:y 1}]]]]))))
+         (merge-rules [[[:a [:b {:x 1}]]] [[:a [:c {:y 1}]]]])))
+  (is (= [[:a [:b {:x 1}] [:c {:y 1}] [:d {:z 1}]]]
+         (merge-rules [[[:a [:b {:x 1}]]] [[:a [:c {:y 1}]]]
+                       [[:a [:d {:z 1}]]]]))))
