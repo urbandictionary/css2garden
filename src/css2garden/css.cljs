@@ -17,9 +17,7 @@
 
 (defmethod visit :atrule
   [{:keys [params nodes]}]
-  (list 'at-media
-        (mq/ast->garden (mq/mediaquery->ast params))
-        (apply concat nodes)))
+  (list 'at-media (mq/ast->garden (mq/mediaquery->ast params)) nodes))
 
 (defmethod visit :default [ast] ast)
 
@@ -43,7 +41,6 @@
 (defn- has-children-selectors?
   [rule]
   (-> rule
-      first
       last
       vector?))
 
@@ -55,31 +52,14 @@
 
 (defn- do-merge-rules
   [rule-a rule-b]
-  (let [rule-a (if (-> rule-a
-                       first
-                       vector?)
-                 (first rule-a)
-                 rule-a)]
-    (cond
-      (or (has-merged-selectors? rule-a) (has-merged-selectors? rule-b)) nil
-      (has-children-selectors? rule-b) (conj rule-a
-                                             (-> rule-b
-                                                 first
-                                                 last))
-      (and (has-properties? (first rule-b)) (has-properties? rule-a))
-        (update-in rule-a
-                   [1]
-                   merge
-                   (-> rule-b
-                       first
-                       last))
-      (has-properties? (first rule-b)) (apply conj
-                                         []
-                                         (first rule-a)
-                                         (-> rule-b
-                                             first
-                                             last)
-                                         (rest rule-a)))))
+  (cond (or (has-merged-selectors? rule-a) (has-merged-selectors? rule-b)) nil
+        (has-children-selectors? rule-b) (conj rule-a
+                                               (-> rule-b
+                                                   last))
+        (and (has-properties? rule-b) (has-properties? rule-a))
+          (update-in rule-a [1] merge (last rule-b))
+        (has-properties? rule-b)
+          (apply conj [] (first rule-a) (last rule-b) (rest rule-a))))
 
 (defn- merge-rules
   [rules]
@@ -92,8 +72,20 @@
     []
     rules))
 
+(defn- flatten-rules
+  [rules]
+  (map (fn [rule]
+         (if (and (= 1 (count rule))
+                  (-> rule
+                      first
+                      vector?))
+           (first rule)
+           rule))
+    rules))
+
 (defn ast->garden
   [ast]
   (->> ast
        (postwalk visit)
+       flatten-rules
        merge-rules))

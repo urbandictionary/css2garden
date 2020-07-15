@@ -126,8 +126,12 @@
 (defn merge-selectors
   [selectors]
   (if (and (> (count selectors) 1) (apply = (map last selectors)))
-    (conj (vec (map first selectors)) (last (first selectors)))
+    [(conj (vec (map first selectors)) (last (first selectors)))]
     selectors))
+
+(defn- flatten-selectors
+  [selectors]
+  (if (= 1 (count selectors)) (first selectors) (vec selectors)))
 
 (defn ast->garden
   [selector garden-prop]
@@ -138,4 +142,4 @@
            (map #(build-garden-selector (u/partition-by-leader % is-combinator?)
                                         garden-prop))
            merge-selectors
-           vec))))
+           flatten-selectors))))
