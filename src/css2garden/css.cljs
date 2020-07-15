@@ -40,14 +40,25 @@
 
 (defn- do-merge-rules
   [rule-a rule-b]
-  (conj (if (-> rule-a
-                first
-                vector?)
-          (first rule-a)
-          rule-a)
-        (-> rule-b
-            first
-            last)))
+  (let [rule-a (if (-> rule-a
+                       first
+                       vector?)
+                 (first rule-a)
+                 rule-a)
+        rule-b (-> rule-b
+                   first
+                   last)]
+    (cond
+      ; rule-a and selector of rule-b
+      (vector? rule-b) (conj rule-a rule-b)
+      ; properties of rule-a and properties of rule-b
+      (and (map? rule-b)
+           (-> rule-a
+               second
+               map?))
+        (update-in rule-a [1] merge rule-b)
+      ; rule-a and properties of rule-b
+      (map? rule-b) (apply conj [] (first rule-a) rule-b (rest rule-a)))))
 
 (defn- merge-rules
   [rules]
