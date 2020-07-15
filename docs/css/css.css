@@ -35,3 +35,10 @@ textarea {
     font-size: 14px;
     font: 14px 'Fira Code', sans-serif;
 }
+
+#error-alert {
+    position: absolute;
+    right: 20px;
+    bottom: 0;
+    z-index: 9999;
+}
