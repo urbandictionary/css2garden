@@ -61,8 +61,7 @@
                  (first rule-a)
                  rule-a)]
     (cond
-      (or (has-merged-selectors? rule-a) (has-merged-selectors? rule-b))
-        [rule-a rule-b]
+      (or (has-merged-selectors? rule-a) (has-merged-selectors? rule-b)) nil
       (has-children-selectors? rule-b) (conj rule-a
                                              (-> rule-b
                                                  first
@@ -86,7 +85,9 @@
   [rules]
   (reduce (fn [acc rule]
             (if (share-prefix? (last acc) rule)
-              (conj (pop acc) (do-merge-rules (last acc) rule))
+              (if-let [merged-rule (do-merge-rules (last acc) rule)]
+                (conj (pop acc) merged-rule)
+                (conj acc rule))
               (conj acc rule)))
     []
     rules))
