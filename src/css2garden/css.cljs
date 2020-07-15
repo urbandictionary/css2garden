@@ -23,4 +23,36 @@
 
 (defmethod visit :default [ast] ast)
 
-(defn ast->garden [ast] (postwalk visit ast))
+(defn- path
+  [rule]
+  (loop [rule rule
+         result []]
+    (if (vector? rule)
+      (recur (last rule) (apply conj result (butlast rule)))
+      result)))
+
+(defn- share-prefix?
+  [rule-a rule-b]
+  (->> (map vector (path rule-a) (path rule-b))
+       (take-while (fn [[a b]] (= a b)))
+       count
+       pos?))
+
+(defn- do-merge-rules
+  [rule-a rule-b]
+  (conj (first rule-a) (last (first rule-b))))
+
+(defn- merge-rules
+  [rules]
+  (reduce (fn [acc rule]
+            (if (share-prefix? (last acc) rule)
+              (conj (pop acc) (do-merge-rules (last acc) rule))
+              (conj acc rule)))
+    []
+    rules))
+
+(defn ast->garden
+  [ast]
+  (->> ast
+       (postwalk visit)
+       merge-rules))

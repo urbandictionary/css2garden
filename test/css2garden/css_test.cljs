@@ -1,7 +1,8 @@
 (ns css2garden.css-test
   (:require [clojure.test :refer [deftest is are]]
             [postcss :refer [parse]]
-            [css2garden.css :refer [ast->garden]]
+            [css2garden.css :refer
+             [ast->garden do-merge-rules merge-rules path share-prefix?]]
             [css2garden.object :refer [ast->clj]]))
 
 (deftest parse-test
@@ -105,6 +106,16 @@
              ast->garden)))
   (is (= [[:h1 :a {:color "#f00"}] [[:h2 {:font-weight "bold"}]]]
          (-> "h1, a { color: #f00; } h2 { font-weight: bold; }"
+             parse
+             ast->clj
+             ast->garden)))
+  (is (= [[:h1 {:color "#f00"} [:a {:font-weight "bold"}]]]
+         (-> "h1 { color: #f00; } h1 a { font-weight: bold; }"
+             parse
+             ast->clj
+             ast->garden)))
+  (is (= [[:h1 [:a {:color "#f00"}] [:b {:font-weight "bold"}]]]
+         (-> "h1 a { color: #f00; } h1 b { font-weight: bold; }"
              parse
              ast->clj
              ast->garden)))
@@ -217,3 +228,33 @@
              parse
              ast->clj
              ast->garden))))
+
+(deftest path-test
+  (is (= [:a] (path [[:a {}]])))
+  (is (= [:a :b] (path [[:a [:b {}]]])))
+  (is (= [:a :b :c] (path [[:a [:b [:c {}]]]])))
+  (is (= [:a :b :c :d] (path [[:a [:b [:c :d {}]]]]))))
+
+(deftest share-prefix?-test
+  (is (share-prefix? [[:a {}]] [[:a {}]]))
+  (is (share-prefix? [[:a [:b {}]]] [[:a [:b {}]]]))
+  (is (share-prefix? [[:a [:x {}]]] [[:a [:b {}]]]))
+  (is (share-prefix? [[:a [:b [:c {}]]]] [[:a [:b [:c {}]]]]))
+  (is (share-prefix? [[:a [:x [:x {}]]]] [[:a [:b [:c {}]]]]))
+  (is (share-prefix? [[:a {}]] [[:a [:b {}]]]))
+  (is (share-prefix? [[:a [:b {}]]] [[:a [:b [:c {}]]]]))
+  (is (share-prefix? [[:a [:b {}]]] [[:a [:b [:c {}]]]]))
+  (is (not (share-prefix? [[:x [:x [:x {}]]]] [[:a [:b [:c {}]]]])))
+  (is (not (share-prefix? [[:x [:b [:c {}]]]] [[:a [:b [:c {}]]]]))))
+
+(deftest do-merge-rules-test
+  (is (= [:a {:x 1} [:b {:y 1}]]
+         (do-merge-rules [[:a {:x 1}]] [[:a [:b {:y 1}]]])))
+  (is (= [:a [:b {:x 1}] [:c {:y 1}]]
+         (do-merge-rules [[:a [:b {:x 1}]]] [[:a [:c {:y 1}]]]))))
+
+(deftest merge-rules-test
+  (is (= [[:a {:x 1} [:b {:y 1}]]]
+         (merge-rules [[[:a {:x 1}]] [[:a [:b {:y 1}]]]])))
+  (is (= [[:a [:b {:x 1}] [:c {:y 1}]]]
+         (merge-rules [[[:a [:b {:x 1}]]] [[:a [:c {:y 1}]]]]))))
