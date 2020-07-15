@@ -38,27 +38,49 @@
        count
        pos?))
 
+(defn- has-merged-selectors? [rule] (> (count (take-while keyword? rule)) 1))
+
+(defn- has-children-selectors?
+  [rule]
+  (-> rule
+      first
+      last
+      vector?))
+
+(defn- has-properties?
+  [rule]
+  (-> rule
+      second
+      map?))
+
 (defn- do-merge-rules
   [rule-a rule-b]
   (let [rule-a (if (-> rule-a
                        first
                        vector?)
                  (first rule-a)
-                 rule-a)
-        rule-b (-> rule-b
-                   first
-                   last)]
+                 rule-a)]
     (cond
-      ; rule-a and selector of rule-b
-      (vector? rule-b) (conj rule-a rule-b)
-      ; properties of rule-a and properties of rule-b
-      (and (map? rule-b)
-           (-> rule-a
-               second
-               map?))
-        (update-in rule-a [1] merge rule-b)
-      ; rule-a and properties of rule-b
-      (map? rule-b) (apply conj [] (first rule-a) rule-b (rest rule-a)))))
+      (or (has-merged-selectors? rule-a) (has-merged-selectors? rule-b))
+        [rule-a rule-b]
+      (has-children-selectors? rule-b) (conj rule-a
+                                             (-> rule-b
+                                                 first
+                                                 last))
+      (and (has-properties? (first rule-b)) (has-properties? rule-a))
+        (update-in rule-a
+                   [1]
+                   merge
+                   (-> rule-b
+                       first
+                       last))
+      (has-properties? (first rule-b)) (apply conj
+                                         []
+                                         (first rule-a)
+                                         (-> rule-b
+                                             first
+                                             last)
+                                         (rest rule-a)))))
 
 (defn- merge-rules
   [rules]

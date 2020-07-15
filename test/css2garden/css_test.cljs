@@ -155,6 +155,21 @@
         parse
         ast->clj
         ast->garden)))
+  (is (= [[[:a {:color "#f00"}]] [:h1 :h2 {:font-weight "bold"}]]
+         (-> "a { color: #f00; } h1, h2 { font-weight: bold; }"
+             parse
+             ast->clj
+             ast->garden)))
+  (is (= [[[:h1 {:color "#f00"}] [:h1 :h2 {:font-weight "bold"}]]]
+         (-> "h1 { color: #f00; } h1, h2 { font-weight: bold; }"
+             parse
+             ast->clj
+             ast->garden)))
+  (is (= [[[:h1 :h2 {:font-weight "bold"}] [[:h1 {:color "#f00"}]]]]
+         (-> "h1, h2 { font-weight: bold; } h1 { color: #f00; }"
+             parse
+             ast->clj
+             ast->garden)))
   (is (= [[[:.container [:.text {:color "#f00"}]]]]
          (-> ".container .text { color: #f00; }"
              parse
@@ -302,4 +317,10 @@
          (merge-rules [[[:a [:b {:x 1}]]] [[:a [:c {:y 1}]]]
                        [[:a [:d {:z 1}]]]])))
   (is (= [[:a {:x 1, :z 1} [:b {:y 1}]]]
-         (merge-rules [[[:a {:x 1}]] [[:a [:b {:y 1}]]] [[:a {:z 1}]]]))))
+         (merge-rules [[[:a {:x 1}]] [[:a [:b {:y 1}]]] [[:a {:z 1}]]])))
+  (is (= [[[:a {:x 1}] [:a :b {:y 1}]]]
+         (merge-rules [[[:a {:x 1}]] [:a :b {:y 1}]])))
+  (is (= [[[:a {:x 1} [:b {:z 1}]] [:a :b {:y 1}]]]
+         (merge-rules [[[:a {:x 1}]] [[:a [:b {:z 1}]]] [:a :b {:y 1}]])))
+  (is (= [[[:a :b {:y 1}] [[:a {:x 1}]]]]
+         (merge-rules [[:a :b {:y 1}] [[:a {:x 1}]]]))))
