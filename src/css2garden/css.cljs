@@ -22,6 +22,7 @@
 (defmethod visit :default [ast] ast)
 
 (defn- path
+  "Returns selector path in a rule as a vector of keywords."
   [rule]
   (loop [rule rule
          result []]
@@ -30,6 +31,7 @@
       result)))
 
 (defn- share-prefix?
+  "Returns true if both selectors in both rules have common parents."
   [rule-a rule-b]
   (->> (map vector (path rule-a) (path rule-b))
        (take-while (fn [[a b]] (= a b)))
@@ -51,6 +53,7 @@
       map?))
 
 (defn- do-merge-rules
+  "Merges properties and selectors of two rules."
   [rule-a rule-b]
   (cond (or (has-merged-selectors? rule-a) (has-merged-selectors? rule-b)) nil
         (has-children-selectors? rule-b) (conj rule-a
@@ -62,6 +65,7 @@
           (apply conj [] (first rule-a) (last rule-b) (rest rule-a))))
 
 (defn- merge-rules
+  "Merges two adjacent rules if their selectors have common parents."
   [rules]
   (reduce (fn [acc rule]
             (if (share-prefix? (last acc) rule)

@@ -76,9 +76,9 @@
     "h1, h2" [:h1 :h2 {}]
     "h1, .bold" [:h1 :.bold {}]
     "h1 a, h2 a" [:h1 :h2 [:a {}]]
-    "h1 a b c d, h2 a b c d" [:h1 :h2 [:a [:b [:c [:d {}]]]]]
     "h1 a, h2 b" ["h1 a" "h2 b" {}]
-    "h1 a b c d e, h2 b c d e f" ["h1 a b c d e" "h2 b c d e f" {}]
+    "h1 a b c d, h2 a b c d" [:h1 :h2 [:a [:b [:c [:d {}]]]]]
+    "h1 a b c, h2 x y z" ["h1 a b c" "h2 x y z" {}]
     "h1 strong, h1 b, h2 strong, h2 b" ["h1 strong" "h1 b" "h2 strong" "h2 b"
                                         {}]
-    "a[b]:c d>e,f[x=y],g" ["a[b]:c d >e" "f[x=\"y\"]" :g {}]))
+    "a[b]:c d>e,f[x=y],g" ["a[b]:c d >e" "f[x=\"y\"]" "g" {}]))

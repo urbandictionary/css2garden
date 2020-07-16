@@ -118,31 +118,49 @@
     ((if stringify? str keyword) (str/join "" (map node-value nodes)))))
 
 (defn- build-garden-selector
+  "Converts CSS-What output to Garden rules."
   [[nodes & rest-nodes] garden-prop]
   (if (empty? nodes)
     garden-prop
     [(render-selector nodes) (build-garden-selector rest-nodes garden-prop)]))
 
 (defn- path
+  "Returns path of a selector. Path elements are joined by space and returned
+   as a string.
+   
+   Example:
+   ```clojure
+   (path [:a {}]) ; \"a\"
+   (path [:a [:b [:c {}]]]) ; \"a b c\"
+   ```"
   [selector]
   (loop [selector selector
          result []]
     (if (vector? selector)
       (recur (last selector) (apply conj result (butlast selector)))
-      (if (> (count result) 1)
-        (-> (str/join " " (map name result))
-            (str/replace "&" ""))
-        (first result)))))
+      (-> (str/join " " (map name result))
+          (str/replace "&" "")))))
 
-(defn- join-selectors
+(defn- combine-selectors
+  "Combines selectors in one rule. If all children elements are identical, parent
+   selectors are combined. If children elements are different, selector paths
+   are combined.
+   
+   Example:
+   ```clojure
+   (combine-selectors [[:a [:x {}]] [:b [:x {}]]]) ; [:a :b [:x {}]]
+   (combine-selectors [[:a [:x {}]] [:b [:y {}]]]) ; [\"a x\" \"b y\" {}]
+   ```"
   [selectors prop]
   (if (apply = (map last selectors))
     [(conj (vec (map first selectors)) (last (first selectors)))]
     (conj (vec (map path selectors)) prop)))
 
-(defn merge-selectors
+(defn maybe-combine-selectors
   [garden-prop selectors]
-  (if (> (count selectors) 1) (join-selectors selectors garden-prop) selectors))
+  (if (> (count selectors) 1)
+    (combine-selectors selectors garden-prop)
+    selectors))
 
 (defn- flatten-selectors
   [selectors]
@@ -156,5 +174,5 @@
       (->> selectors
            (map #(build-garden-selector (u/partition-by-leader % is-combinator?)
                                         garden-prop))
-           (merge-selectors garden-prop)
+           (maybe-combine-selectors garden-prop)
            flatten-selectors))))
