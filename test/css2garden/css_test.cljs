@@ -222,8 +222,7 @@
         parse
         ast->clj
         ast->garden)))
-  (is (= [[[:h1 [:strong {:color "#f00"}]] [:h1 [:b {:color "#f00"}]]
-           [:h2 [:strong {:color "#f00"}]] [:h2 [:b {:color "#f00"}]]]]
+  (is (= [["h1 strong" "h1 b" "h2 strong" "h2 b" {:color "#f00"}]]
          (-> "h1 strong, h1 b, h2 strong, h2 b { color: #f00; }"
              parse
              ast->clj

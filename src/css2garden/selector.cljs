@@ -123,11 +123,26 @@
     garden-prop
     [(render-selector nodes) (build-garden-selector rest-nodes garden-prop)]))
 
-(defn merge-selectors
-  [selectors]
-  (if (and (> (count selectors) 1) (apply = (map last selectors)))
+(defn- path
+  [selector]
+  (loop [selector selector
+         result []]
+    (if (vector? selector)
+      (recur (last selector) (apply conj result (butlast selector)))
+      (if (> (count result) 1)
+        (-> (str/join " " (map name result))
+            (str/replace "&" ""))
+        (first result)))))
+
+(defn- join-selectors
+  [selectors prop]
+  (if (apply = (map last selectors))
     [(conj (vec (map first selectors)) (last (first selectors)))]
-    selectors))
+    (conj (vec (map path selectors)) prop)))
+
+(defn merge-selectors
+  [garden-prop selectors]
+  (if (> (count selectors) 1) (join-selectors selectors garden-prop) selectors))
 
 (defn- flatten-selectors
   [selectors]
@@ -141,5 +156,5 @@
       (->> selectors
            (map #(build-garden-selector (u/partition-by-leader % is-combinator?)
                                         garden-prop))
-           merge-selectors
+           (merge-selectors garden-prop)
            flatten-selectors))))
