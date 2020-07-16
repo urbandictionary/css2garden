@@ -17,14 +17,3 @@
            js/JSON.parse
            (js->clj :keywordize-keys true))
        (postwalk cleanup)))
-
-(defn obj->clj
-  [obj]
-  (if (goog.isObject obj)
-    (-> (fn [result key]
-          (let [v (goog.object/get obj key)]
-            (if (or (= "function" (goog/typeOf v)) (= "parent" key))
-              result
-              (assoc result (keyword key) (obj->clj v)))))
-        (reduce {} (.getKeys ^js goog/object obj)))
-    obj))
