@@ -23,6 +23,8 @@
     "supports"
       (list 'at-supports (mq/ast->garden (mq/mediaquery->ast params)) nodes)))
 
+(defmethod visit :comment [_ast] nil)
+
 (defmethod visit :default [ast] ast)
 
 (defn- path
@@ -96,4 +98,5 @@
   (->> ast
        (postwalk visit)
        flatten-rules
-       merge-rules))
+       merge-rules
+       (remove nil?)))
