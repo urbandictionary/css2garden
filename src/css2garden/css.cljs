@@ -5,11 +5,11 @@
 
 (defn- nodes->properties
   [nodes]
-  (reduce (fn [accum {:keys [prop value important]}]
-            (assoc accum
-              (keyword prop) (str value (when important " !important"))))
-    {}
-    nodes))
+  (->> nodes
+       (remove nil?)
+       (map (fn [{:keys [prop value important]}]
+              [(keyword prop) (str value (when important " !important"))]))
+       (into {})))
 
 (defmulti visit :type)
 

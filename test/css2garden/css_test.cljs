@@ -302,6 +302,11 @@
          (-> ".a { color: red !important; }"
              parse
              ast->clj
+             ast->garden)))
+  (is (= [[:.a {:a "1", :b "2"}]]
+         (-> ".a { a: 1; /* a: 2; */ b: 2}"
+             parse
+             ast->clj
              ast->garden))))
 
 (deftest path-test
