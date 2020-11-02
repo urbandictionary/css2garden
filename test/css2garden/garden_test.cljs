@@ -4,7 +4,7 @@
             [garden.core :as garden]
             [garden.units :refer [px]]
             [garden.selectors :as s]
-            [garden.stylesheet :refer [at-media]]))
+            [garden.stylesheet :refer [at-keyframes at-media]]))
 
 (defn garden->css [input] (garden/css {:pretty-print? false} input))
 
