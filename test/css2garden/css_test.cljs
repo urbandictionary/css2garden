@@ -297,6 +297,11 @@
          (-> ".a { color: red; } /* a comment */ .b { color: blue; }"
              parse
              ast->clj
+             ast->garden)))
+  (is (= [[:.a {:color "red !important"}]]
+         (-> ".a { color: red !important; }"
+             parse
+             ast->clj
              ast->garden))))
 
 (deftest path-test

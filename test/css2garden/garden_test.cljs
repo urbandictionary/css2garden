@@ -35,7 +35,9 @@
     (is (= "funny-selector:lang(urr) > b{font-size:18px}"
            (garden->css ["funny-selector:lang(urr) > b" {:font-size "18px"}])))
     (is (= "@media screen{h1{a:b}}"
-           (garden->css [(at-media {:screen true} [:h1 {:a :b}])])))))
+           (garden->css [(at-media {:screen true} [:h1 {:a :b}])])))
+    (is (= ".a{color:red !important;border:none}"
+           (garden->css [[:.a {:color "red !important", :border "none"}]])))))
 
 (deftest at-media-test
   (testing

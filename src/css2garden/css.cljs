@@ -3,17 +3,21 @@
             [css2garden.selector :as selector]
             [clojure.walk :refer [postwalk]]))
 
+(defn- nodes->properties
+  [nodes]
+  (reduce (fn [accum {:keys [prop value important]}]
+            (assoc accum
+              (keyword prop) (str value (when important " !important"))))
+    {}
+    nodes))
+
 (defmulti visit :type)
 
 (defmethod visit :root [{:keys [nodes]}] nodes)
 
 (defmethod visit :rule
   [{:keys [selector nodes]}]
-  (selector/ast->garden selector
-                        (reduce (fn [accum {:keys [prop value]}]
-                                  (assoc accum (keyword prop) value))
-                          {}
-                          nodes)))
+  (selector/ast->garden selector (nodes->properties nodes)))
 
 (defmethod visit :atrule
   [{:keys [name params nodes]}]
