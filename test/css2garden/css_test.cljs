@@ -1,5 +1,5 @@
 (ns css2garden.css-test
-  (:require [clojure.test :refer [deftest is are]]
+  (:require [clojure.test :refer [deftest is are testing]]
             [postcss :refer [parse]]
             [css2garden.css :refer
              [ast->garden do-merge-rules merge-rules path share-prefix?]]
@@ -353,4 +353,9 @@
   (is (= [[:a {:x 1} [:b {:z 1}]] [:a :b {:y 1}]]
          (merge-rules [[:a {:x 1}] [:a [:b {:z 1}]] [:a :b {:y 1}]])))
   (is (= [[:a :b {:y 1}] [:a {:x 1}]]
-         (merge-rules [[:a :b {:y 1}] [:a {:x 1}]]))))
+         (merge-rules [[:a :b {:y 1}] [:a {:x 1}]])))
+  (testing "removed comments between rules don't break merging"
+           (is (= [[:a {:x 1} [:b {:y 1}]]]
+                  (merge-rules [[:a {:x 1}] nil [:a [:b {:y 1}]]])))
+           (is (= [[:a [:b {:x 1}] [:c {:y 1}]]]
+                  (merge-rules [[:a [:b {:x 1}]] nil [:a [:c {:y 1}]]])))))

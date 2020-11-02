@@ -77,14 +77,15 @@
 (defn- merge-rules
   "Merges two adjacent rules if their selectors have common parents."
   [rules]
-  (reduce (fn [acc rule]
-            (if (share-prefix? (last acc) rule)
-              (if-let [merged-rule (do-merge-rules (last acc) rule)]
-                (conj (pop acc) merged-rule)
-                (conj acc rule))
-              (conj acc rule)))
-    []
-    rules))
+  (->> rules
+       (remove nil?)
+       (reduce (fn [acc rule]
+                 (if (share-prefix? (last acc) rule)
+                   (if-let [merged-rule (do-merge-rules (last acc) rule)]
+                     (conj (pop acc) merged-rule)
+                     (conj acc rule))
+                   (conj acc rule)))
+         [])))
 
 (defn- flatten-rules
   [rules]
@@ -102,5 +103,4 @@
   (->> ast
        (postwalk visit)
        flatten-rules
-       merge-rules
-       (remove nil?)))
+       merge-rules))
