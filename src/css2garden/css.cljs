@@ -16,8 +16,10 @@
                           nodes)))
 
 (defmethod visit :atrule
-  [{:keys [params nodes]}]
-  (list 'at-media (mq/ast->garden (mq/mediaquery->ast params)) nodes))
+  [{:keys [name params nodes], :as x}]
+  (case name
+    "media" (list 'at-media (mq/ast->garden (mq/mediaquery->ast params)) nodes)
+    "keyframes" (apply list 'at-keyframes params nodes)))
 
 (defmethod visit :default [ast] ast)
 

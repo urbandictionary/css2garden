@@ -277,6 +277,11 @@
          (-> "[id] { color: #f00; }"
              parse
              ast->clj
+             ast->garden)))
+  (is (= [(list 'at-keyframes "test" [:from {:top "0px"}] [:to {:top "10px"}])]
+         (-> "@keyframes test  { from  { top: 0px; } to { top: 10px; }}"
+             parse
+             ast->clj
              ast->garden))))
 
 (deftest path-test
