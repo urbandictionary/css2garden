@@ -282,6 +282,11 @@
          (-> "@keyframes test  { from  { top: 0px; } to { top: 10px; }}"
              parse
              ast->clj
+             ast->garden)))
+  (is (= [(list 'at-supports {:display "grid"} [[:div {:display "grid"}]])]
+         (-> "@supports (display: grid) { div { display: grid; } }"
+             parse
+             ast->clj
              ast->garden))))
 
 (deftest path-test
