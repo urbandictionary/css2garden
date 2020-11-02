@@ -200,7 +200,7 @@
              parse
              ast->clj
              ast->garden)))
-  (is (= [[:div:focus [:a:active [(keyword "i::after") {:color "#f00"}]]]]
+  (is (= [[:div:focus [:a:active ["i::after" {:color "#f00"}]]]]
          (-> "div:focus a:active i::after { color: #f00; }"
              parse
              ast->clj
@@ -230,8 +230,7 @@
   (is
     (=
       [["a[attr=\"test\"]:hover::after"
-        ["b[attr=\"ud\"]:focus::before"
-         [(keyword "c:active::after") {:color "#f00"}]]]]
+        ["b[attr=\"ud\"]:focus::before" ["c:active::after" {:color "#f00"}]]]]
       (->
         "a[attr=\"test\"]:hover::after b[attr=\"ud\"]:focus::before
         c:active::after { color: #f00; }"

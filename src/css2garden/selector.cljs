@@ -79,6 +79,8 @@
 
 (defn- is-attribute? [node] (= "attribute" (node-type node)))
 
+(defn- is-psuedo-element? [node] (= "pseudo-element" (:type node)))
+
 (defn- is-pseudo-with-params?
   [node]
   (and (= "pseudo" (:type node)) (some? (:data node))))
@@ -114,7 +116,8 @@
                        (not (empty? (filter (some-fn is-attribute?
                                                      is-pseudo-with-params?
                                                      is-id-attribute?
-                                                     is-class-attribute?)
+                                                     is-class-attribute?
+                                                     is-psuedo-element?)
                                       nodes))))]
     ((if stringify? str keyword) (str/join "" (map node-value nodes)))))
 

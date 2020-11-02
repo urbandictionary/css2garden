@@ -35,11 +35,11 @@
     ":not(.important.dialog)" [":not(.important.dialog)" {}]
     "p:lang(it)" ["p:lang(it)" {}]
     ; pseudo-elements
-    "a::after" [(keyword "a::after") {}]
-    "*::after" [(keyword "*::after") {}]
+    "a::after" ["a::after" {}]
+    "*::after" ["*::after" {}]
     "a:after" [:a:after {}]
-    "a::first-line" [(keyword "a::first-line") {}]
-    "a::-moz-selection" [(keyword "a::-moz-selection") {}]
+    "a::first-line" ["a::first-line" {}]
+    "a::-moz-selection" ["a::-moz-selection" {}]
     ; attributes
     "[a=\"b\"]" ["[a=\"b\"]" {}]
     "[id]" ["[id]" {}]
@@ -70,7 +70,7 @@
     "a[attr=\"test\"]:hover::after" ["a[attr=\"test\"]:hover::after" {}]
     "a[attr=\"test\"]:hover::after b[attr=\"ud\"]:focus::before c:active::after"
       ["a[attr=\"test\"]:hover::after"
-       ["b[attr=\"ud\"]:focus::before" [(keyword "c:active::after") {}]]]
+       ["b[attr=\"ud\"]:focus::before" ["c:active::after" {}]]]
     "[attr=\"test\"]:hover::after" ["[attr=\"test\"]:hover::after" {}]
     ; mixed cases
     "h1, h2" [:h1 :h2 {}]
