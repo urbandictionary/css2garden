@@ -3,6 +3,8 @@
             [css-what :as css-what]
             [clojure.string :as str]))
 
+(defn- is-percentage? [v] (re-find #"^\d+%$" v))
+
 (def attribute-actions
   {"equals" "=",
    "element" "~=",
@@ -165,9 +167,14 @@
   [selectors]
   (if (= 1 (count selectors)) (first selectors) (vec selectors)))
 
+(defn- parse-selector
+  [selector]
+  (cond (is-percentage? selector) nil
+        :else (js->clj (.parse css-what selector) :keywordize-keys true)))
+
 (defn ast->garden
   [selector garden-prop]
-  (let [selectors (js->clj (.parse css-what selector) :keywordize-keys true)]
+  (let [selectors (parse-selector selector)]
     (if (empty? selectors)
       [selector garden-prop]
       (->> selectors
