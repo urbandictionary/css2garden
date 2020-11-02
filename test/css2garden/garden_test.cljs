@@ -4,7 +4,7 @@
             [garden.core :as garden]
             [garden.units :refer [px]]
             [garden.selectors :as s]
-            [garden.stylesheet :refer [at-keyframes at-media]]))
+            [garden.stylesheet :refer [at-keyframes at-media at-supports]]))
 
 (defn garden->css [input] (garden/css {:pretty-print? false} input))
 
@@ -60,3 +60,9 @@
            (at-keyframes :test [:from {:x "0px"}] [:to {:x "10px"}]))))
   (is (= "@keyframes test{from{x:0}to{x:10}}"
          (garden->css (at-keyframes :test [:from {:x 0}] [:to {:x 10}])))))
+
+(deftest at-supports-test
+  (is (= "@supports(display:grid){}"
+         (garden->css (at-supports {:display "grid"} []))))
+  (is (= "@supports(-webkit-touch-callout:none){}"
+         (garden->css (at-supports {:-webkit-touch-callout "none"} [])))))
