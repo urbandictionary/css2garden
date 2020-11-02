@@ -50,3 +50,13 @@
     (is (= "@media(max-width:959px) and (min-width:768px){}"
            (garden->css (at-media {:max-width (px 959), :min-width (px 768)}
                                   []))))))
+
+(deftest at-keyframes-test
+  (is (= "@keyframes test{from{x:0px}to{x:10px}}"
+         (garden->css
+           (at-keyframes "test" [:from {:x "0px"}] [:to {:x "10px"}]))))
+  (is (= "@keyframes test{from{x:0px}to{x:10px}}"
+         (garden->css
+           (at-keyframes :test [:from {:x "0px"}] [:to {:x "10px"}]))))
+  (is (= "@keyframes test{from{x:0}to{x:10}}"
+         (garden->css (at-keyframes :test [:from {:x 0}] [:to {:x 10}])))))
