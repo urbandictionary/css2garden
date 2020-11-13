@@ -3,7 +3,7 @@
             [css-what :as css-what]
             [clojure.string :as str]))
 
-(defn- is-percentage? [v] (re-find #"^\d+%$" v))
+(defn- is-keyframes? [v] (re-find #"^\d+%(,\d+%)*$" v))
 
 (def attribute-actions
   {"equals" "=",
@@ -172,7 +172,7 @@
 
 (defn- parse-selector
   [selector]
-  (cond (is-percentage? selector) nil
+  (cond (is-keyframes? selector) nil
         :else (js->clj (.parse css-what selector) :keywordize-keys true)))
 
 (defn ast->garden

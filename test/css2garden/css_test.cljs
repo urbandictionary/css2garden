@@ -288,6 +288,16 @@
            parse
            ast->clj
            ast->garden)))
+  (is
+    (= [(list 'at-keyframes
+              "test"
+              ["0%,50%" {:top "0px"}]
+              ["50%,75%,100%" {:top "10px"}])]
+       (->
+         "@keyframes test  { 0%,50%  { top: 0px; } 50%,75%,100% { top: 10px; }}"
+         parse
+         ast->clj
+         ast->garden)))
   (is (= [(list 'at-supports {:display "grid"} [[:div {:display "grid"}]])]
          (-> "@supports (display: grid) { div { display: grid; } }"
              parse
