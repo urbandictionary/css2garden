@@ -19,4 +19,5 @@
   (-> (.readFileSync fs js/process.stdin.fd "utf-8")
       convert
       pr-str
-      println))
+      println)
+  (js/process.exit 0))
