@@ -1,19 +1,17 @@
 (ns css2garden.object
-  "Convert from Javascript class instance to ClojureScript hash map"
-  (:require [clojure.walk :refer [postwalk]]))
-
-(defn cleanup
-  [input]
-  (if (map? input)
-    (-> input
-        (dissoc :raws :source)
-        (update :type keyword))
-    input))
+  "Convert from Javascript class instance to ClojureScript hash map")
 
 (defn ast->clj
-  [input]
-  (->> (-> input
-           js/JSON.stringify
-           js/JSON.parse
-           (js->clj :keywordize-keys true))
-       (postwalk cleanup)))
+  [node]
+  (cond-> {}
+    (.-important node) (assoc :important (.-important node))
+    (.-name node) (assoc :name (.-name node))
+    (.-nodes node) (assoc :nodes (mapv ast->clj (.-nodes node)))
+    (.-params node) (assoc :params (.-params node))
+    (.-prop node) (assoc :prop (.-prop node))
+    (.-selector node) (assoc :selector (.-selector node))
+    (.-type node) (assoc :type
+                    (-> node
+                        .-type
+                        keyword))
+    (.-value node) (assoc :value (.-value node))))
